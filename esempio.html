@@ -1,0 +1,155 @@
+<!doctype html><html lang='it'><head><meta charset="utf-8"><meta name="robots" content="noindex"><meta name='viewport' content='width=device-width,initial-scale=1'></head><body><title>Cruscotto fatture Lumen Impianti Elettrici Srl</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<style>
+/* Layout: colonna unica da 1080px, riepilogo in alto, poi le sezioni nell'ordine in cui si agisce. */
+:root{
+  --bg:#f6f7f8; --surface:#ffffff; --ink:#14171a; --ink-2:#4f5761; --ink-3:#77808a;
+  --rule:#e1e5ea; --rule-soft:#eef1f4; --accent:#2a78d6; --accent-soft:#9ec5f4;
+  --good:#0ca30c; --warn:#fab219; --serious:#ec835a; --crit:#d03b3b;
+  --good-ink:#0a7a0a; --warn-ink:#8a5a00; --crit-ink:#b42d2d;
+  --chip-ok:#e6f4e6; --chip-warn:#fdf1d6; --chip-crit:#fbe3e3; --demo:#fff4cf; --demo-ink:#6b4e00;
+  --sans:"IBM Plex Sans",ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,"SF Mono",Menlo,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#121417; --surface:#1a1d21; --ink:#f1f3f5; --ink-2:#b9c0c8; --ink-3:#8b939c;
+  --rule:#2c3137; --rule-soft:#22262b; --accent:#3987e5; --accent-soft:#184f95;
+  --good-ink:#5fd35f; --warn-ink:#f6c45a; --crit-ink:#f08a8a;
+  --chip-ok:#173018; --chip-warn:#3a2e10; --chip-crit:#3d1c1c; --demo:#3a2e10; --demo-ink:#f6d68a;
+  color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#121417; --surface:#1a1d21; --ink:#f1f3f5; --ink-2:#b9c0c8; --ink-3:#8b939c;
+  --rule:#2c3137; --rule-soft:#22262b; --accent:#3987e5; --accent-soft:#184f95;
+  --good-ink:#5fd35f; --warn-ink:#f6c45a; --crit-ink:#f08a8a;
+  --chip-ok:#173018; --chip-warn:#3a2e10; --chip-crit:#3d1c1c; --demo:#3a2e10; --demo-ink:#f6d68a;
+  color-scheme:dark}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.5 var(--sans);font-variant-numeric:tabular-nums}
+.wrap{max-width:1080px;margin:0 auto;padding-inline:20px;padding-block:28px 56px;display:grid;gap:28px}
+header{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:flex-end;gap:12px 24px}
+h1{font-size:26px;line-height:1.2;margin:0;font-weight:600;letter-spacing:-.01em;text-wrap:balance}
+.sub{color:var(--ink-2);margin:4px 0 0}
+.meta{color:var(--ink-3);font-size:13px;text-align:right}
+.mono{font-family:var(--mono);font-size:.92em}
+.demo{background:var(--demo);color:var(--demo-ink);border-radius:8px;padding:10px 14px;font-size:14px}
+.tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:12px}
+.tile{background:var(--surface);border:1px solid var(--rule);border-radius:10px;padding:16px 18px;display:grid;gap:4px;align-content:start}
+.tile .k{font-size:12px;text-transform:uppercase;letter-spacing:.06em;color:var(--ink-3)}
+.tile .v{font-size:28px;font-weight:600;letter-spacing:-.01em;line-height:1.15}
+.tile .n{font-size:13px;color:var(--ink-2)}
+.tile.alert .v{color:var(--crit-ink)}
+section{display:grid;gap:12px;min-width:0}
+h2{font-size:18px;margin:0;font-weight:600;text-wrap:balance}
+.lead{color:var(--ink-2);margin:-6px 0 0;max-width:68ch}
+.panel{background:var(--surface);border:1px solid var(--rule);border-radius:10px;padding:16px 18px;min-width:0}
+.two{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:12px}
+.two > section{align-content:start}
+.scroll{overflow-x:auto}
+table{border-collapse:collapse;width:100%;font-size:14px}
+th{font-weight:500;color:var(--ink-3);font-size:12px;text-transform:uppercase;letter-spacing:.05em;text-align:left;padding:8px 10px;border-bottom:1px solid var(--rule)}
+td{padding:9px 10px;border-bottom:1px solid var(--rule-soft);vertical-align:top}
+tr:last-child td{border-bottom:0}
+td.r,th.r{text-align:right;white-space:nowrap}
+.chip{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:500;border-radius:99px;padding:2px 9px;white-space:nowrap}
+.chip::before{content:"";width:7px;height:7px;border-radius:50%}
+.chip.ok{background:var(--chip-ok);color:var(--good-ink)} .chip.ok::before{background:var(--good)}
+.chip.attenzione{background:var(--chip-warn);color:var(--warn-ink)} .chip.attenzione::before{background:var(--warn)}
+.chip.critico{background:var(--chip-crit);color:var(--crit-ink)} .chip.critico::before{background:var(--crit)}
+.note{font-size:13px;color:var(--ink-3);max-width:80ch}
+.chart{width:100%;height:auto;display:block;overflow:visible}
+.chart .grid{stroke:var(--rule-soft);stroke-width:1}
+.chart .grid.zero{stroke:var(--rule)}
+.chart .tick{fill:var(--ink-3);font-size:11px;font-family:var(--sans)}
+.chart .lab{fill:var(--ink-2);font-size:13px;font-family:var(--sans)}
+.chart .val{fill:var(--ink);font-size:13px;font-weight:500;font-family:var(--sans)}
+.chart .bar{fill:var(--accent)} .chart .bar.soft{fill:var(--accent);fill-opacity:.38}
+.chart .st-warn{fill:var(--warn)} .chart .st-serious{fill:var(--serious)} .chart .st-crit{fill:var(--crit)}
+.chart .hit{fill:transparent;cursor:default;outline:none}
+.chart .hit:hover,.chart .hit:focus-visible{fill:var(--ink);fill-opacity:.05}
+details summary{cursor:pointer;color:var(--ink-2);font-size:13px;margin-top:8px}
+#tip{position:fixed;z-index:10;pointer-events:none;background:var(--ink);color:var(--bg);font-size:13px;line-height:1.4;padding:7px 10px;border-radius:6px;max-width:260px}
+.legend{display:flex;flex-wrap:wrap;gap:6px 16px;font-size:12px;color:var(--ink-2)}
+.legend i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:6px;vertical-align:-1px}
+@media (max-width:560px){h1{font-size:22px}.meta{text-align:left}.tile .v{font-size:24px}}
+</style>
+<div class="wrap">
+<header>
+  <div><h1>Lumen Impianti Elettrici Srl</h1><p class="sub">Cruscotto dalle fatture elettroniche · P.IVA <span class="mono">45188210001</span></p></div>
+  <div class="meta">Situazione al 8 ott 2026<br>712 fatture emesse, 224 ricevute</div>
+</header>
+<div class='demo'><b>Dati dimostrativi.</b> Azienda, clienti e importi sono inventati: servono a mostrare cosa esce dalle fatture XML di una PMI.</div>
+
+<div class="tiles">
+  <div class="tile"><span class="k">Fatturato ultimi 12 mesi</span><span class="v">583 mila €</span>
+    <span class="n">+4% rispetto ai 12 mesi prima</span></div>
+  <div class="tile"><span class="k">Da incassare</span><span class="v">159 mila €</span>
+    <span class="n">di cui scaduto 80 mila €</span></div>
+  <div class="tile alert"><span class="k">Scaduto da oltre 60 giorni</span>
+    <span class="v">21 mila €</span><span class="n">9 rate ferme</span></div>
+  <div class="tile"><span class="k">Giorni medi per incassare</span>
+    <span class="v">69 gg</span>
+    <span class="n">dalla data fattura, pesati per importo</span></div>
+</div>
+
+<section>
+  <h2>Chi sollecitare oggi</h2>
+  <p class="lead">Clienti con rate scadute e non ancora incassate, in ordine di importo pesato per il ritardo.</p>
+  <div class='panel scroll'><table><thead><tr><th>Cliente</th><th>Fatture scadute</th><th class='r'>Importo</th><th class='r'>Ritardo massimo</th></tr></thead><tbody><tr><td>Edilnova Costruzioni Srl</td><td class='mono'>120/2025, 149/2025, 169/2026, 162/2026 e altre 8</td><td class='r'>25.006 €</td><td class='r'><span class='chip critico'>465 gg</span></td></tr><tr><td>Officina Meccanica Rinaldi Srl</td><td class='mono'>74/2024, 60/2025, 128/2025, 152/2025 e altre 2</td><td class='r'>14.518 €</td><td class='r'><span class='chip critico'>646 gg</span></td></tr><tr><td>Condominio Via Manzoni 12</td><td class='mono'>278/2025, 285/2025, 189/2026, 199/2026 e altre 2</td><td class='r'>20.466 €</td><td class='r'><span class='chip critico'>312 gg</span></td></tr><tr><td>Ristorante Da Gino Sas</td><td class='mono'>214/2026, 220/2026, 216/2026, 226/2026</td><td class='r'>14.026 €</td><td class='r'><span class='chip attenzione'>8 gg</span></td></tr><tr><td>Comune di Valfonda</td><td class='mono'>192/2026, 181/2026, 188/2026, 190/2026 e altre 2</td><td class='r'>5.184 €</td><td class='r'><span class='chip attenzione'>38 gg</span></td></tr><tr><td>Palestra Energy Club Asd</td><td class='mono'>219/2026</td><td class='r'>687 €</td><td class='r'><span class='chip attenzione'>8 gg</span></td></tr></tbody></table></div>
+</section>
+
+<div class="two">
+  <section class="panel">
+    <h2>Crediti per anzianità</h2>
+    <p class="lead">158.571 € ancora da incassare, divisi per giorni dalla scadenza.</p>
+    <svg viewBox="0 0 420 208" role="img" aria-label="Crediti per anzianità" class="chart"><text x="0" y="28.0" class="lab">Non ancora scaduti</text><line x1="164" x2="164" y1="10" y2="38" class="grid zero"/><path d="M164.0,13.0H324.0Q328.0,13.0 328.0,17.0V31.0Q328.0,35.0 324.0,35.0H164.0Z" class="bar"/><text x="336.0" y="28.0" class="val">79 mila €</text><rect x="0" y="4" width="420" height="40" class="hit" tabindex="0" data-tip="&lt;b&gt;Non ancora scaduti&lt;/b&gt;&lt;br&gt;78.684 € su 47 rate"/><text x="0" y="68.0" class="lab">Scaduti da 1–30 giorni</text><line x1="164" x2="164" y1="50" y2="78" class="grid zero"/><path d="M164.0,53.0H224.8Q228.8,53.0 228.8,57.0V71.0Q228.8,75.0 224.8,75.0H164.0Z" class="st-warn"/><text x="236.8" y="68.0" class="val">31 mila €</text><rect x="0" y="44" width="420" height="40" class="hit" tabindex="0" data-tip="&lt;b&gt;Scaduti da 1–30 giorni&lt;/b&gt;&lt;br&gt;31.074 € su 12 rate"/><text x="0" y="108.0" class="lab">Da 31–60 giorni</text><line x1="164" x2="164" y1="90" y2="118" class="grid zero"/><path d="M164.0,93.0H217.1Q221.1,93.0 221.1,97.0V111.0Q221.1,115.0 217.1,115.0H164.0Z" class="st-serious"/><text x="229.1" y="108.0" class="val">27 mila €</text><rect x="0" y="84" width="420" height="40" class="hit" tabindex="0" data-tip="&lt;b&gt;Da 31–60 giorni&lt;/b&gt;&lt;br&gt;27.377 € su 14 rate"/><text x="0" y="148.0" class="lab">Da 61–90 giorni</text><line x1="164" x2="164" y1="130" y2="158" class="grid zero"/><path d="" class="st-crit"/><text x="172.0" y="148.0" class="val">0 €</text><rect x="0" y="124" width="420" height="40" class="hit" tabindex="0" data-tip="&lt;b&gt;Da 61–90 giorni&lt;/b&gt;&lt;br&gt;0 € su 0 rate"/><text x="0" y="188.0" class="lab">Oltre 90 giorni</text><line x1="164" x2="164" y1="170" y2="198" class="grid zero"/><path d="M164.0,173.0H204.7Q208.7,173.0 208.7,177.0V191.0Q208.7,195.0 204.7,195.0H164.0Z" class="st-crit"/><text x="216.7" y="188.0" class="val">21 mila €</text><rect x="0" y="164" width="420" height="40" class="hit" tabindex="0" data-tip="&lt;b&gt;Oltre 90 giorni&lt;/b&gt;&lt;br&gt;21.436 € su 9 rate"/></svg>
+  </section>
+  <section class="panel">
+    <h2>Incassi attesi nelle prossime 8 settimane</h2>
+    <p class="lead">48.042 € in scadenza, se i clienti pagano puntuali.</p>
+    <svg viewBox="0 0 420 230" role="img" aria-label="Incassi attesi per settimana" class="chart"><line x1="52" x2="412" y1="196.0" y2="196.0" class="grid zero"/><text x="44" y="200.0" class="tick" text-anchor="end">0</text><line x1="52" x2="412" y1="151.0" y2="151.0" class="grid"/><text x="44" y="155.0" class="tick" text-anchor="end">5.000</text><line x1="52" x2="412" y1="106.0" y2="106.0" class="grid"/><text x="44" y="110.0" class="tick" text-anchor="end">10 mila</text><line x1="52" x2="412" y1="61.0" y2="61.0" class="grid"/><text x="44" y="65.0" class="tick" text-anchor="end">15 mila</text><line x1="52" x2="412" y1="16.0" y2="16.0" class="grid"/><text x="44" y="20.0" class="tick" text-anchor="end">20 mila</text><path d="M60.5,196.0V180.1Q60.5,176.1 64.5,176.1H84.4Q88.4,176.1 88.4,180.1V196.0Z" class="bar"/><rect x="52.0" y="16" width="45.0" height="180" class="hit" tabindex="0" data-tip="&lt;b&gt;Settimana 5–11 ott&lt;/b&gt;&lt;br&gt;2.213 € attesi da 2 scadenze"/><text x="74.5" y="214" class="tick" text-anchor="middle">5 ott</text><path d="M105.5,196.0V187.4Q105.5,183.4 109.5,183.4H129.4Q133.4,183.4 133.4,187.4V196.0Z" class="bar"/><rect x="97.0" y="16" width="45.0" height="180" class="hit" tabindex="0" data-tip="&lt;b&gt;Settimana 12–18 ott&lt;/b&gt;&lt;br&gt;1.402 € attesi da 2 scadenze"/><text x="119.5" y="214" class="tick" text-anchor="middle">12 ott</text><path d="M150.6,196.0V72.8Q150.6,68.8 154.6,68.8H174.5Q178.5,68.8 178.5,72.8V196.0Z" class="bar"/><rect x="142.0" y="16" width="45.0" height="180" class="hit" tabindex="0" data-tip="&lt;b&gt;Settimana 19–25 ott&lt;/b&gt;&lt;br&gt;14.128 € attesi da 5 scadenze"/><text x="164.5" y="214" class="tick" text-anchor="middle">19 ott</text><path d="M195.6,196.0V38.5Q195.6,34.5 199.6,34.5H219.5Q223.5,34.5 223.5,38.5V196.0Z" class="bar"/><rect x="187.0" y="16" width="45.0" height="180" class="hit" tabindex="0" data-tip="&lt;b&gt;Settimana 26–1 nov&lt;/b&gt;&lt;br&gt;17.946 € attesi da 14 scadenze"/><text x="209.5" y="214" class="tick" text-anchor="middle">26 ott</text><path d="M240.6,196.0V180.5Q240.6,176.5 244.6,176.5H264.4Q268.4,176.5 268.4,180.5V196.0Z" class="bar"/><rect x="232.0" y="16" width="45.0" height="180" class="hit" tabindex="0" data-tip="&lt;b&gt;Settimana 2–8 nov&lt;/b&gt;&lt;br&gt;2.168 € attesi da 2 scadenze"/><text x="254.5" y="214" class="tick" text-anchor="middle">2 nov</text><path d="M285.6,196.0V172.8Q285.6,168.8 289.6,168.8H309.4Q313.4,168.8 313.4,172.8V196.0Z" class="bar"/><rect x="277.0" y="16" width="45.0" height="180" class="hit" tabindex="0" data-tip="&lt;b&gt;Settimana 9–15 nov&lt;/b&gt;&lt;br&gt;3.023 € attesi da 1 scadenza"/><text x="299.5" y="214" class="tick" text-anchor="middle">9 nov</text><path d="M330.6,196.0V182.1Q330.6,178.1 334.6,178.1H354.4Q358.4,178.1 358.4,182.1V196.0Z" class="bar"/><rect x="322.0" y="16" width="45.0" height="180" class="hit" tabindex="0" data-tip="&lt;b&gt;Settimana 16–22 nov&lt;/b&gt;&lt;br&gt;1.989 € attesi da 2 scadenze"/><text x="344.5" y="214" class="tick" text-anchor="middle">16 nov</text><path d="M375.6,196.0V153.5Q375.6,149.5 379.6,149.5H399.4Q403.4,149.5 403.4,153.5V196.0Z" class="bar"/><rect x="367.0" y="16" width="45.0" height="180" class="hit" tabindex="0" data-tip="&lt;b&gt;Settimana 23–29 nov&lt;/b&gt;&lt;br&gt;5.172 € attesi da 2 scadenze"/><text x="389.5" y="214" class="tick" text-anchor="middle">23 nov</text></svg>
+  </section>
+</div>
+
+<section class="panel">
+  <h2>Fatturato mensile</h2>
+  <p class="lead">Imponibile delle fatture emesse, al netto delle note di credito. Il mese in corso è più tenue perché non è finito.</p>
+  <svg viewBox="0 0 760 260" role="img" aria-label="Fatturato mensile" class="chart"><line x1="56" x2="752" y1="226.0" y2="226.0" class="grid zero"/><text x="48" y="230.0" class="tick" text-anchor="end">0</text><line x1="56" x2="752" y1="173.5" y2="173.5" class="grid"/><text x="48" y="177.5" class="tick" text-anchor="end">20 mila</text><line x1="56" x2="752" y1="121.0" y2="121.0" class="grid"/><text x="48" y="125.0" class="tick" text-anchor="end">40 mila</text><line x1="56" x2="752" y1="68.5" y2="68.5" class="grid"/><text x="48" y="72.5" class="tick" text-anchor="end">60 mila</text><line x1="56" x2="752" y1="16.0" y2="16.0" class="grid"/><text x="48" y="20.0" class="tick" text-anchor="end">80 mila</text><path d="M57.0,226.0V96.9Q57.0,92.9 61.0,92.9H77.8Q81.8,92.9 81.8,96.9V226.0Z" class="bar"/><rect x="56.0" y="16" width="26.8" height="210" class="hit" tabindex="0" data-tip="&lt;b&gt;settembre 2024&lt;/b&gt;&lt;br&gt;50.712 € di imponibile"/><text x="69.4" y="244" class="tick" text-anchor="middle">set 24</text><path d="M83.8,226.0V93.1Q83.8,89.1 87.8,89.1H104.5Q108.5,89.1 108.5,93.1V226.0Z" class="bar"/><rect x="82.8" y="16" width="26.8" height="210" class="hit" tabindex="0" data-tip="&lt;b&gt;ottobre 2024&lt;/b&gt;&lt;br&gt;52.134 € di imponibile"/><text x="96.2" y="244" class="tick" text-anchor="middle">ott</text><path d="M110.5,226.0V100.5Q110.5,96.5 114.5,96.5H131.3Q135.3,96.5 135.3,100.5V226.0Z" class="bar"/><rect x="109.5" y="16" width="26.8" height="210" class="hit" tabindex="0" data-tip="&lt;b&gt;novembre 2024&lt;/b&gt;&lt;br&gt;49.345 € di imponibile"/><path d="M137.3,226.0V132.8Q137.3,128.8 141.3,128.8H158.1Q162.1,128.8 162.1,132.8V226.0Z" class="bar"/><rect x="136.3" y="16" width="26.8" height="210" class="hit" tabindex="0" data-tip="&lt;b&gt;dicembre 2024&lt;/b&gt;&lt;br&gt;37.010 € di imponibile"/><path d="M164.1,226.0V113.8Q164.1,109.8 168.1,109.8H184.8Q188.8,109.8 188.8,113.8V226.0Z" class="bar"/><rect x="163.1" y="16" width="26.8" height="210" class="hit" tabindex="0" data-tip="&lt;b&gt;gennaio 2025&lt;/b&gt;&lt;br&gt;44.272 € di imponibile"/><text x="176.5" y="244" class="tick" text-anchor="middle">gen 25</text><path d="M190.8,226.0V124.1Q190.8,120.1 194.8,120.1H211.6Q215.6,120.1 215.6,124.1V226.0Z" class="bar"/><rect x="189.8" y="16" width="26.8" height="210" class="hit" tabindex="0" data-tip="&lt;b&gt;febbraio 2025&lt;/b&gt;&lt;br&gt;40.337 € di imponibile"/><path d="M217.6,226.0V96.2Q217.6,92.2 221.6,92.2H238.4Q242.4,92.2 242.4,96.2V226.0Z" class="bar"/><rect x="216.6" y="16" width="26.8" height="210" class="hit" tabindex="0" data-tip="&lt;b&gt;marzo 2025&lt;/b&gt;&lt;br&gt;50.970 € di imponibile"/><path d="M244.4,226.0V95.8Q244.4,91.8 248.4,91.8H265.2Q269.2,91.8 269.2,95.8V226.0Z" class="bar"/><rect x="243.4" y="16" width="26.8" height="210" class="hit" tabindex="0" data-tip="&lt;b&gt;aprile 2025&lt;/b&gt;&lt;br&gt;51.133 € di imponibile"/><text x="256.8" y="244" class="tick" text-anchor="middle">apr</text><path d="M271.2,226.0V80.3Q271.2,76.3 275.2,76.3H291.9Q295.9,76.3 295.9,80.3V226.0Z" class="bar"/><rect x="270.2" y="16" width="26.8" height="210" class="hit" tabindex="0" data-tip="&lt;b&gt;maggio 2025&lt;/b&gt;&lt;br&gt;57.020 € di imponibile"/><path d="M297.9,226.0V89.0Q297.9,85.0 301.9,85.0H318.7Q322.7,85.0 322.7,89.0V226.0Z" class="bar"/><rect x="296.9" y="16" width="26.8" height="210" class="hit" tabindex="0" data-tip="&lt;b&gt;giugno 2025&lt;/b&gt;&lt;br&gt;53.699 € di imponibile"/><path d="M324.7,226.0V82.6Q324.7,78.6 328.7,78.6H345.5Q349.5,78.6 349.5,82.6V226.0Z" class="bar"/><rect x="323.7" y="16" width="26.8" height="210" class="hit" tabindex="0" data-tip="&lt;b&gt;luglio 2025&lt;/b&gt;&lt;br&gt;56.161 € di imponibile"/><text x="337.1" y="244" class="tick" text-anchor="middle">lug</text><path d="M351.5,226.0V168.8Q351.5,164.8 355.5,164.8H372.2Q376.2,164.8 376.2,168.8V226.0Z" class="bar"/><rect x="350.5" y="16" width="26.8" height="210" class="hit" tabindex="0" data-tip="&lt;b&gt;agosto 2025&lt;/b&gt;&lt;br&gt;23.313 € di imponibile"/><path d="M378.2,226.0V114.9Q378.2,110.9 382.2,110.9H399.0Q403.0,110.9 403.0,114.9V226.0Z" class="bar"/><rect x="377.2" y="16" width="26.8" height="210" class="hit" tabindex="0" data-tip="&lt;b&gt;settembre 2025&lt;/b&gt;&lt;br&gt;43.831 € di imponibile"/><path d="M405.0,226.0V89.3Q405.0,85.3 409.0,85.3H425.8Q429.8,85.3 429.8,89.3V226.0Z" class="bar"/><rect x="404.0" y="16" width="26.8" height="210" class="hit" tabindex="0" data-tip="&lt;b&gt;ottobre 2025&lt;/b&gt;&lt;br&gt;53.600 € di imponibile"/><text x="417.4" y="244" class="tick" text-anchor="middle">ott</text><path d="M431.8,226.0V114.1Q431.8,110.1 435.8,110.1H452.5Q456.5,110.1 456.5,114.1V226.0Z" class="bar"/><rect x="430.8" y="16" width="26.8" height="210" class="hit" tabindex="0" data-tip="&lt;b&gt;novembre 2025&lt;/b&gt;&lt;br&gt;44.134 € di imponibile"/><path d="M458.5,226.0V121.8Q458.5,117.8 462.5,117.8H479.3Q483.3,117.8 483.3,121.8V226.0Z" class="bar"/><rect x="457.5" y="16" width="26.8" height="210" class="hit" tabindex="0" data-tip="&lt;b&gt;dicembre 2025&lt;/b&gt;&lt;br&gt;41.207 € di imponibile"/><path d="M485.3,226.0V120.3Q485.3,116.3 489.3,116.3H506.1Q510.1,116.3 510.1,120.3V226.0Z" class="bar"/><rect x="484.3" y="16" width="26.8" height="210" class="hit" tabindex="0" data-tip="&lt;b&gt;gennaio 2026&lt;/b&gt;&lt;br&gt;41.785 € di imponibile"/><text x="497.7" y="244" class="tick" text-anchor="middle">gen 26</text><path d="M512.1,226.0V118.5Q512.1,114.5 516.1,114.5H532.8Q536.8,114.5 536.8,118.5V226.0Z" class="bar"/><rect x="511.1" y="16" width="26.8" height="210" class="hit" tabindex="0" data-tip="&lt;b&gt;febbraio 2026&lt;/b&gt;&lt;br&gt;42.460 € di imponibile"/><path d="M538.8,226.0V80.8Q538.8,76.8 542.8,76.8H559.6Q563.6,76.8 563.6,80.8V226.0Z" class="bar"/><rect x="537.8" y="16" width="26.8" height="210" class="hit" tabindex="0" data-tip="&lt;b&gt;marzo 2026&lt;/b&gt;&lt;br&gt;56.826 € di imponibile"/><path d="M565.6,226.0V85.3Q565.6,81.3 569.6,81.3H586.4Q590.4,81.3 590.4,85.3V226.0Z" class="bar"/><rect x="564.6" y="16" width="26.8" height="210" class="hit" tabindex="0" data-tip="&lt;b&gt;aprile 2026&lt;/b&gt;&lt;br&gt;55.113 € di imponibile"/><text x="578.0" y="244" class="tick" text-anchor="middle">apr</text><path d="M592.4,226.0V71.4Q592.4,67.4 596.4,67.4H613.2Q617.2,67.4 617.2,71.4V226.0Z" class="bar"/><rect x="591.4" y="16" width="26.8" height="210" class="hit" tabindex="0" data-tip="&lt;b&gt;maggio 2026&lt;/b&gt;&lt;br&gt;60.436 € di imponibile"/><path d="M619.2,226.0V93.5Q619.2,89.5 623.2,89.5H639.9Q643.9,89.5 643.9,93.5V226.0Z" class="bar"/><rect x="618.2" y="16" width="26.8" height="210" class="hit" tabindex="0" data-tip="&lt;b&gt;giugno 2026&lt;/b&gt;&lt;br&gt;52.007 € di imponibile"/><path d="M645.9,226.0V103.7Q645.9,99.7 649.9,99.7H666.7Q670.7,99.7 670.7,103.7V226.0Z" class="bar"/><rect x="644.9" y="16" width="26.8" height="210" class="hit" tabindex="0" data-tip="&lt;b&gt;luglio 2026&lt;/b&gt;&lt;br&gt;48.122 € di imponibile"/><text x="658.3" y="244" class="tick" text-anchor="middle">lug</text><path d="M672.7,226.0V168.4Q672.7,164.4 676.7,164.4H693.5Q697.5,164.4 697.5,168.4V226.0Z" class="bar"/><rect x="671.7" y="16" width="26.8" height="210" class="hit" tabindex="0" data-tip="&lt;b&gt;agosto 2026&lt;/b&gt;&lt;br&gt;23.480 € di imponibile"/><path d="M699.5,226.0V97.1Q699.5,93.1 703.5,93.1H720.2Q724.2,93.1 724.2,97.1V226.0Z" class="bar"/><rect x="698.5" y="16" width="26.8" height="210" class="hit" tabindex="0" data-tip="&lt;b&gt;settembre 2026&lt;/b&gt;&lt;br&gt;50.634 € di imponibile"/><path d="M726.2,226.0V194.5Q726.2,190.5 730.2,190.5H747.0Q751.0,190.5 751.0,194.5V226.0Z" class="bar soft"/><rect x="725.2" y="16" width="26.8" height="210" class="hit" tabindex="0" data-tip="&lt;b&gt;ottobre 2026 (in corso)&lt;/b&gt;&lt;br&gt;13.531 € di imponibile"/><text x="738.6" y="244" class="tick" text-anchor="middle">ott</text></svg>
+  <details><summary>Mostra i valori in tabella</summary><div class="scroll"><table><thead><tr><th>Mese</th><th class="r">Imponibile</th></tr></thead><tbody><tr><td>settembre 2024</td><td class='r'>50.712 €</td></tr><tr><td>ottobre 2024</td><td class='r'>52.134 €</td></tr><tr><td>novembre 2024</td><td class='r'>49.345 €</td></tr><tr><td>dicembre 2024</td><td class='r'>37.010 €</td></tr><tr><td>gennaio 2025</td><td class='r'>44.272 €</td></tr><tr><td>febbraio 2025</td><td class='r'>40.337 €</td></tr><tr><td>marzo 2025</td><td class='r'>50.970 €</td></tr><tr><td>aprile 2025</td><td class='r'>51.133 €</td></tr><tr><td>maggio 2025</td><td class='r'>57.020 €</td></tr><tr><td>giugno 2025</td><td class='r'>53.699 €</td></tr><tr><td>luglio 2025</td><td class='r'>56.161 €</td></tr><tr><td>agosto 2025</td><td class='r'>23.313 €</td></tr><tr><td>settembre 2025</td><td class='r'>43.831 €</td></tr><tr><td>ottobre 2025</td><td class='r'>53.600 €</td></tr><tr><td>novembre 2025</td><td class='r'>44.134 €</td></tr><tr><td>dicembre 2025</td><td class='r'>41.207 €</td></tr><tr><td>gennaio 2026</td><td class='r'>41.785 €</td></tr><tr><td>febbraio 2026</td><td class='r'>42.460 €</td></tr><tr><td>marzo 2026</td><td class='r'>56.826 €</td></tr><tr><td>aprile 2026</td><td class='r'>55.113 €</td></tr><tr><td>maggio 2026</td><td class='r'>60.436 €</td></tr><tr><td>giugno 2026</td><td class='r'>52.007 €</td></tr><tr><td>luglio 2026</td><td class='r'>48.122 €</td></tr><tr><td>agosto 2026</td><td class='r'>23.480 €</td></tr><tr><td>settembre 2026</td><td class='r'>50.634 €</td></tr><tr><td>ottobre 2026</td><td class='r'>13.531 €</td></tr></tbody></table></div></details>
+</section>
+
+<section>
+  <h2>Clienti</h2>
+  <p class="lead">I primi tre clienti valgono il 45% del fatturato degli ultimi 12 mesi. Se uno si ferma, si sente.
+  Il ritardo è la mediana dei giorni tra scadenza e incasso.</p>
+  <div class="panel scroll"><table><thead><tr><th>Cliente</th><th class="r">Fatturato 12 mesi</th><th class="r">Quota</th>
+  <th class="r">Da incassare</th><th class="r">Ritardo tipico</th><th>Stato</th></tr></thead><tbody><tr><td>Edilnova Costruzioni Srl</td><td class='r'>114.849 €</td><td class='r'>20%</td><td class='r'>40.225 €</td><td class='r'>+37 gg</td><td><span class='chip critico'>Da sollecitare</span></td></tr><tr><td>Logistica Padana Spa</td><td class='r'>83.437 €</td><td class='r'>14%</td><td class='r'>13.690 €</td><td class='r'>+2 gg</td><td><span class='chip ok'>Puntuale</span></td></tr><tr><td>Comune di Valfonda</td><td class='r'>61.947 €</td><td class='r'>11%</td><td class='r'>12.206 €</td><td class='r'>+38 gg</td><td><span class='chip attenzione'>Paga in ritardo</span></td></tr><tr><td>Hotel Belvedere Srl</td><td class='r'>52.938 €</td><td class='r'>9%</td><td class='r'>12.164 €</td><td class='r'>+1 gg</td><td><span class='chip ok'>Puntuale</span></td></tr><tr><td>Condominio Via Manzoni 12</td><td class='r'>52.693 €</td><td class='r'>9%</td><td class='r'>24.387 €</td><td class='r'>+54 gg</td><td><span class='chip critico'>Da sollecitare</span></td></tr><tr><td>Palestra Energy Club Asd</td><td class='r'>42.851 €</td><td class='r'>7%</td><td class='r'>9.953 €</td><td class='r'>+33 gg</td><td><span class='chip attenzione'>Paga in ritardo</span></td></tr><tr><td>Studio Dentistico Marchi</td><td class='r'>30.191 €</td><td class='r'>5%</td><td class='r'>1.312 €</td><td class='r'>+0 gg</td><td><span class='chip ok'>Puntuale</span></td></tr><tr><td>Farmacia San Marco Snc</td><td class='r'>29.665 €</td><td class='r'>5%</td><td class='r'>1.631 €</td><td class='r'>+2 gg</td><td><span class='chip ok'>Puntuale</span></td></tr><tr><td>Officina Meccanica Rinaldi Srl</td><td class='r'>24.132 €</td><td class='r'>4%</td><td class='r'>14.518 €</td><td class='r'>+25 gg</td><td><span class='chip critico'>Da sollecitare</span></td></tr><tr><td>Supermercato Il Girasole Srl</td><td class='r'>23.317 €</td><td class='r'>4%</td><td class='r'>5.029 €</td><td class='r'>+14 gg</td><td><span class='chip ok'>Puntuale</span></td></tr><tr><td>Ristorante Da Gino Sas</td><td class='r'>21.122 €</td><td class='r'>4%</td><td class='r'>16.048 €</td><td class='r'>+18 gg</td><td><span class='chip ok'>Puntuale</span></td></tr><tr><td>Agriturismo La Quercia</td><td class='r'>17.091 €</td><td class='r'>3%</td><td class='r'>0 €</td><td class='r'>+8 gg</td><td><span class='chip ok'>Puntuale</span></td></tr></tbody></table></div>
+</section>
+
+<section>
+  <h2>IVA mese per mese</h2>
+  <p class="lead">Stima della liquidazione: IVA sulle vendite meno IVA sugli acquisti. L'IVA in split payment è esclusa
+  perché la versa l'ente pubblico. Acquisti degli ultimi 12 mesi: 352.526 €.</p>
+  <div class="panel scroll"><table><thead><tr><th>Mese</th><th class="r">IVA vendite</th><th class="r">IVA acquisti</th>
+  <th class="r">Saldo stimato</th></tr></thead><tbody><tr><td>maggio 2026</td><td class='r'>11.449 €</td><td class='r'>7.183 €</td><td class='r'><b>4.265 €</b></td></tr><tr><td>giugno 2026</td><td class='r'>9.461 €</td><td class='r'>6.550 €</td><td class='r'><b>2.911 €</b></td></tr><tr><td>luglio 2026</td><td class='r'>8.044 €</td><td class='r'>7.108 €</td><td class='r'><b>935 €</b></td></tr><tr><td>agosto 2026</td><td class='r'>3.897 €</td><td class='r'>2.249 €</td><td class='r'><b>1.648 €</b></td></tr><tr><td>settembre 2026</td><td class='r'>8.689 €</td><td class='r'>6.953 €</td><td class='r'><b>1.737 €</b></td></tr><tr><td>ottobre 2026 (in corso)</td><td class='r'>1.749 €</td><td class='r'>2.014 €</td><td class='r'><b>−265 €</b></td></tr></tbody></table></div>
+  <p class="note">È una stima per pianificare la cassa: non tiene conto di crediti IVA pregressi, acconti, pro-rata o
+  registrazioni in date diverse dalla data fattura. Il conto definitivo lo fa il commercialista.</p>
+</section>
+
+<p class="note">Letti 936 file, scartati 0 duplicati.
+Incassi abbinati dal file fornito.
+Autofatture e integrazioni (TD16–TD28) escluse dal fatturato.</p>
+</div>
+<div id="tip" hidden></div>
+<script>
+const tip=document.getElementById('tip');
+function show(t,x,y){tip.innerHTML=t.dataset.tip;tip.hidden=false;place(x,y)}
+function place(x,y){const r=tip.getBoundingClientRect();let l=x+14,tp=y+14;
+ if(l+r.width>innerWidth-8)l=x-r.width-14; if(tp+r.height>innerHeight-8)tp=y-r.height-14;
+ tip.style.left=Math.max(8,l)+'px';tip.style.top=Math.max(8,tp)+'px'}
+document.addEventListener('pointerover',ev=>{const t=ev.target.closest('[data-tip]');if(t)show(t,ev.clientX,ev.clientY);else tip.hidden=true});
+document.addEventListener('pointermove',ev=>{if(!tip.hidden)place(ev.clientX,ev.clientY)});
+document.addEventListener('focusin',ev=>{const t=ev.target.closest('[data-tip]');if(!t)return;const b=t.getBoundingClientRect();show(t,b.left+b.width/2,b.top)});
+document.addEventListener('focusout',()=>{tip.hidden=true});
+</script>
+</body></html>

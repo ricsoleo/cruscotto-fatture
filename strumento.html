@@ -1,0 +1,1096 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline' https://cdnjs.cloudflare.com; style-src 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; connect-src 'self'; img-src 'self' data:; base-uri 'none'; form-action 'none'">
+<meta name="referrer" content="no-referrer">
+<title>Fatture elettroniche XML in Excel, gratis e senza caricare file</title>
+<meta name="description" content="Trasforma le fatture elettroniche XML e p7m in Excel: fatture, righe, scadenze e fatturato mensile. Gratis, e i file non lasciano il tuo browser.">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js" integrity="sha512-XMVd28F1oH/O71fzwBnV7HucLxVwtxf26XV8P4wPk26EDxuGZ91N8bsOttmnomcCD3CS5ZMRL50H0GgOHvegtg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js" integrity="sha512-r22gChDnGvBylk90+2e/ycr3RVrDi8DIOkIGNhJlKfuyQM4tIRAI062MaV8sfjQKYVGjOBaZBOA87z+IhZE9DA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"Fatture elettroniche XML in Excel","applicationCategory":"BusinessApplication","operatingSystem":"Browser","inLanguage":"it","offers":{"@type":"Offer","price":"0","priceCurrency":"EUR"}}</script>
+<style>
+/* Layout: stessa colonna da 1100px del sito. In alto testo + area di trascinamento, sotto i risultati a schede, in fondo la guida. */
+:root{
+  --paper:#f3f6f4; --sheet:#ffffff; --ink:#10201b; --ink-2:#44554f; --ink-3:#6f7f79;
+  --rule:#d9e2de; --green:#1e6b57; --green-soft:#e1efe9; --stamp:#c8432a; --stamp-soft:#fbe9e4;
+  --code-bg:#0f1c18; --code-ink:#cfe3db; --code-tag:#7fc8ad; --code-val:#f2c47e;
+  --display:"Bricolage Grotesque","IBM Plex Sans",ui-sans-serif,system-ui,sans-serif;
+  --sans:"IBM Plex Sans",ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,"SF Mono",Menlo,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --paper:#0e1513; --sheet:#151f1c; --ink:#e6efeb; --ink-2:#b2c2bc; --ink-3:#86968f;
+  --rule:#26332f; --green:#5cc3a4; --green-soft:#17302a; --stamp:#ff7a59; --stamp-soft:#3a1d16;
+  --code-bg:#09110e; --code-ink:#cfe3db; --code-tag:#7fc8ad; --code-val:#f2c47e; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --paper:#0e1513; --sheet:#151f1c; --ink:#e6efeb; --ink-2:#b2c2bc; --ink-3:#86968f;
+  --rule:#26332f; --green:#5cc3a4; --green-soft:#17302a; --stamp:#ff7a59; --stamp-soft:#3a1d16;
+  --code-bg:#09110e; --code-ink:#cfe3db; --code-tag:#7fc8ad; --code-val:#f2c47e; color-scheme:dark}
+*{box-sizing:border-box}
+body{margin:0;background:var(--paper);color:var(--ink);font:16px/1.6 var(--sans);font-variant-numeric:tabular-nums}
+a{color:var(--green)}
+.wrap{max-width:1100px;margin:0 auto;padding-inline:20px}
+.mono{font-family:var(--mono)}
+.small{font-size:14px;color:var(--ink-3)}
+[hidden]{display:none!important}
+nav{display:flex;justify-content:space-between;align-items:center;gap:16px;padding-block:20px}
+.back{font-family:var(--display);font-weight:700;font-size:19px;letter-spacing:-.01em;color:var(--ink);text-decoration:none;white-space:nowrap}
+.back:hover{color:var(--green)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;background:var(--green);color:var(--paper);border:0;border-radius:8px;padding:12px 18px;font:600 15px/1.2 var(--sans);text-decoration:none;cursor:pointer;text-align:center}
+.btn:hover{filter:brightness(1.08)} .btn:focus-visible,a:focus-visible,button:focus-visible,[tabindex]:focus-visible,select:focus-visible,summary:focus-visible{outline:2px solid var(--stamp);outline-offset:3px}
+.btn.ghost{background:transparent;color:var(--green);box-shadow:inset 0 0 0 1.5px var(--green)}
+.btn[disabled]{opacity:.55;cursor:progress}
+.linkbtn{background:none;border:0;padding:0;font:inherit;color:var(--green);text-decoration:underline;cursor:pointer}
+
+/* testa: testo a sinistra, area file a destra */
+.hero{display:grid;grid-template-columns:1fr 1fr;gap:40px;align-items:start;padding-block:24px 56px}
+h1{font-family:var(--display);font-weight:700;font-size:clamp(32px,4.6vw,50px);line-height:1.05;letter-spacing:-.025em;margin:0 0 18px;text-wrap:balance}
+h1 em{font-style:normal;color:var(--green)}
+.lead{font-size:18px;color:var(--ink-2);margin:0 0 22px;max-width:34em}
+.privacy{display:grid;grid-template-columns:auto 1fr;gap:12px;align-items:start;background:var(--green-soft);border-radius:10px;padding:14px 16px;font-size:15px;color:var(--ink-2)}
+.privacy b{color:var(--ink)}
+.privacy svg{color:var(--green);margin-top:2px}
+.privacy p{margin:0}
+.privacy p + p{margin-top:6px}
+
+.drop{background:var(--sheet);border:2px dashed var(--rule);border-radius:14px;padding:36px 24px;display:grid;justify-items:center;text-align:center;gap:10px;transition:border-color .15s,background-color .15s}
+.drop.sopra{border-color:var(--green);background:var(--green-soft)}
+.drop svg{color:var(--green)}
+.drop .titolo{font:700 22px/1.2 var(--display);margin:4px 0 0}
+.drop .cta-row{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin-top:10px}
+.stato{min-height:24px;margin-top:14px;font-size:15px;color:var(--ink-2);display:grid;gap:8px}
+.stato progress{width:100%;height:6px;appearance:none;border:0;border-radius:3px;background:var(--rule);overflow:hidden}
+.stato progress::-webkit-progress-bar{background:var(--rule)}
+.stato progress::-webkit-progress-value{background:var(--green)}
+.stato progress::-moz-progress-bar{background:var(--green)}
+.stato.errore{color:var(--stamp)}
+
+/* risultati */
+section{padding-block:48px;border-top:1px solid var(--rule)}
+h2{font-family:var(--display);font-weight:700;font-size:clamp(26px,3.4vw,36px);line-height:1.1;letter-spacing:-.02em;margin:0 0 12px;text-wrap:balance}
+h3{font-family:var(--display);font-weight:700;font-size:21px;line-height:1.2;letter-spacing:-.01em;margin:0 0 6px}
+.res-head{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:flex-end;gap:16px 24px;margin-bottom:20px}
+.eyebrow{font:500 12px/1 var(--mono);text-transform:uppercase;letter-spacing:.08em;color:var(--ink-3);margin:0 0 10px}
+.res-head h2{margin:0 0 6px}
+.res-head p{margin:0;color:var(--ink-2)}
+.res-head > div{min-width:0}
+.res-head select{font:14px var(--sans);padding:6px 8px;border-radius:6px;border:1px solid var(--rule);background:var(--sheet);color:var(--ink);max-width:100%;text-overflow:ellipsis}
+.scelta{margin-top:8px!important;font-size:14px}
+.azioni{display:flex;flex-wrap:wrap;gap:10px}
+.demo-banner{background:var(--stamp-soft);border-radius:10px;padding:12px 16px;font-size:15px;margin-bottom:16px}
+.demo-banner b{color:var(--stamp)}
+
+.tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px}
+.tile{background:var(--sheet);border:1px solid var(--rule);border-radius:12px;padding:18px 20px;display:grid;gap:4px;align-content:start}
+.tile .k{font-size:14px;font-weight:500;color:var(--ink-2)}
+.tile .v{font:700 30px/1.1 var(--display);letter-spacing:-.02em}
+.tile .n{font-size:14px;color:var(--ink-3)}
+.lettura{margin:16px 0 0;color:var(--ink-2);font-size:15px}
+.lettura .sep{color:var(--rule);margin-inline:6px}
+.errori{margin-top:12px;background:var(--stamp-soft);border-radius:10px;padding:12px 16px}
+.errori p{margin:0 0 6px;font-weight:600}
+.errori ul{margin:0;padding-left:18px;max-height:220px;overflow:auto;font-size:14px;color:var(--ink-2);display:grid;gap:4px}
+.errori .mono{font-size:13px;word-break:break-all;color:var(--ink)}
+.ignorati{margin-top:8px;font-size:14px;color:var(--ink-3)}
+
+.cards{display:grid;gap:16px;margin-top:24px}
+.card{background:var(--sheet);border:1px solid var(--rule);border-radius:12px;padding:22px;min-width:0}
+.card > p.sub{margin:0 0 18px;color:var(--ink-2);font-size:15px;max-width:60em}
+.due{display:grid;grid-template-columns:1fr 1fr;gap:16px;align-items:start}
+
+/* grafico a barre in CSS */
+.grafico{overflow-x:auto;padding-top:6px}
+.plot{display:grid;grid-template-columns:56px 1fr;gap:8px;height:230px}
+.yax{position:relative;font-size:12px;color:var(--ink-3)}
+.yax span{position:absolute;right:0;transform:translateY(50%);white-space:nowrap;line-height:1}
+.area{position:relative}
+.griglia i{position:absolute;left:0;right:0;border-top:1px solid var(--rule);opacity:.6}
+.griglia i.zero{opacity:1}
+.cols{position:absolute;inset:0;display:flex;align-items:stretch;gap:2px}
+.col{flex:1 1 0;min-width:4px;display:flex;align-items:flex-end;justify-content:center;border-radius:4px;outline-offset:1px}
+.col i{display:block;width:100%;max-width:30px;background:var(--green);border-radius:4px 4px 0 0}
+.col.corso i{opacity:.4}
+.col:hover,.col:focus-visible{background:color-mix(in srgb,var(--ink) 6%,transparent)}
+.xlab{display:grid;grid-template-columns:56px 1fr;gap:8px;margin-top:6px;font-size:11px;color:var(--ink-3);line-height:1.3}
+.xlab .r{display:flex;gap:2px}
+.xlab .r span{flex:1 1 0;min-width:4px;text-align:center;white-space:nowrap}
+.xlab .anni span{text-align:left;overflow:visible;font-weight:500;color:var(--ink-2)}
+.xlab .corto{display:none}
+.grafico.stretto .xlab .lungo{display:none}.grafico.stretto .xlab .corto{display:inline}
+.cols,.xlab .r{min-width:var(--minw,0)}
+#tip{position:fixed;z-index:10;pointer-events:none;background:var(--ink);color:var(--paper);font-size:13px;line-height:1.4;padding:7px 10px;border-radius:6px;max-width:260px}
+#tip b{font-size:15px}
+
+details.valori{margin-top:16px}
+details.valori summary{cursor:pointer;color:var(--green);font-size:14px;font-weight:500}
+
+.scroll{overflow-x:auto}
+table{border-collapse:collapse;width:100%;font-size:15px}
+th{font-weight:500;color:var(--ink-3);font-size:12px;text-transform:uppercase;letter-spacing:.05em;text-align:left;padding:8px 10px;border-bottom:1px solid var(--rule);white-space:nowrap}
+td{padding:9px 10px;border-bottom:1px solid var(--rule);vertical-align:top}
+tr:last-child td{border-bottom:0}
+th:first-child,td:first-child{padding-left:0} th:last-child,td:last-child{padding-right:0}
+td.r,th.r{text-align:right;white-space:nowrap}
+td .id{display:block;font:12px var(--mono);color:var(--ink-3)}
+td.data{white-space:nowrap;font-size:14px}
+.quota{display:flex;align-items:center;gap:8px;justify-content:flex-end}
+.quota i{display:block;height:8px;background:var(--green);border-radius:0 4px 4px 0;min-width:2px}
+.quota .barra{width:48px;display:flex}
+.anno td{font-weight:600;background:var(--paper)}
+.nota{margin:14px 0 0;font-size:14px;color:var(--ink-3)}
+.attenzione{background:var(--stamp-soft);border-radius:10px;padding:12px 16px;font-size:15px;margin:0 0 16px}
+.attenzione b{color:var(--stamp)}
+.vuoto{color:var(--ink-3);font-size:15px;margin:0}
+
+.richiamo{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:16px 28px;background:var(--sheet);border:2px solid var(--green);border-radius:12px;padding:22px 24px;margin-top:24px}
+.richiamo p{margin:0;font-size:17px;max-width:44em;color:var(--ink-2)}
+.richiamo b{color:var(--ink)}
+
+/* guida */
+.guida{display:grid;grid-template-columns:1fr 1fr;gap:40px}
+.guida p,.guida li{color:var(--ink-2)}
+.guida ol{padding-left:20px;display:grid;gap:10px;margin:0}
+.guida p{margin:0 0 14px}
+footer{padding-block:32px 48px;border-top:1px solid var(--rule);color:var(--ink-3);font-size:14px;display:flex;flex-wrap:wrap;justify-content:space-between;gap:12px}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+
+@media (max-width:900px){.due{grid-template-columns:1fr}}
+@media (max-width:820px){.hero,.guida{grid-template-columns:1fr}.hero{gap:28px;padding-block:8px 44px}}
+@media (max-width:700px){.plot{height:190px}}
+@media (max-width:520px){
+  .card{padding:16px}.drop{padding:28px 16px}.drop .cta-row .btn{width:100%}
+  .tiles{grid-template-columns:1fr 1fr;gap:10px}.tile{padding:14px}.tile .v{font-size:23px}.tile .k,.tile .n{font-size:13px}
+  table{font-size:14px} th,td{padding:8px 6px} .nasc-m{display:none} td.data{font-size:13px}
+  .quota .barra{display:none}
+  .plot,.xlab{grid-template-columns:44px 1fr;gap:6px}
+  .azioni,.azioni .btn{width:100%}
+  .richiamo{padding:18px}.richiamo .btn{width:100%}
+}
+@media (prefers-reduced-motion:reduce){.drop{transition:none}}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+<nav>
+  <a class="back" href="index.html">← Cruscotto Fatture</a>
+  <span class="small">Strumento gratuito</span>
+</nav>
+
+<div class="hero">
+  <div>
+    <h1>Fatture elettroniche XML <em>in Excel</em>, gratis</h1>
+    <p class="lead">Trascina le fatture scaricate dal cassetto fiscale o dal gestionale: .xml, .p7m firmati e .zip, anche insieme.
+      In pochi secondi vedi il fatturato mese per mese, i clienti principali e le scadenze, e scarichi un Excel con ogni fattura e ogni riga.</p>
+    <div class="privacy">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>
+      <div>
+        <p><b>I file non vengono caricati su nessun server.</b> Li apre il tuo browser, su questo computer, e restano lì.
+          La pagina non usa cookie né strumenti di statistica, e non serve registrarsi.</p>
+        <p>Vuoi la prova? Dopo aver aperto la pagina stacca internet: con i tuoi file funziona lo stesso.</p>
+      </div>
+    </div>
+  </div>
+
+  <div>
+    <div class="drop" id="drop">
+      <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5"/><path d="M12 17v-6"/><path d="m9 14 3 3 3-3"/></svg>
+      <p class="titolo">Trascina qui le fatture</p>
+      <p class="small" style="margin:0">.xml, .p7m e .zip, anche insieme. Puoi aggiungerne altre dopo, per esempio prima le emesse e poi le ricevute.</p>
+      <div class="cta-row">
+        <button class="btn" type="button" id="scegli">Scegli i file</button>
+        <button class="btn ghost" type="button" id="demo">Prova con le fatture di esempio</button>
+      </div>
+      <input type="file" id="file" multiple accept=".xml,.p7m,.zip,application/zip,text/xml,application/xml,application/pkcs7-mime" class="sr" tabindex="-1" aria-hidden="true">
+    </div>
+    <div class="stato" id="stato" role="status" aria-live="polite"></div>
+  </div>
+</div>
+</div>
+
+<section id="risultati" hidden>
+<div class="wrap">
+  <div class="res-head">
+    <div>
+      <p class="eyebrow">Azienda riconosciuta</p>
+      <h2 id="az-nome"></h2>
+      <p>P.IVA <span class="mono" id="az-piva"></span> · <span id="az-rif"></span></p>
+      <p class="scelta" id="scelta" hidden><label for="sel-piva">Non è la tua azienda? </label><select id="sel-piva"></select></p>
+    </div>
+    <div class="azioni">
+      <button class="btn" type="button" id="excel">Scarica Excel</button>
+      <button class="btn ghost" type="button" id="ricomincia">Ricomincia</button>
+    </div>
+  </div>
+  <div class="demo-banner" id="demo-banner" hidden><b>Fatture di esempio.</b> Lumen Impianti Elettrici Srl non esiste, e nemmeno i suoi clienti.
+    Per l'esempio «oggi» è l'8 ottobre 2026.</div>
+
+  <div class="tiles" id="tiles"></div>
+  <p class="lettura" id="lettura"></p>
+  <div class="errori" id="errori" hidden></div>
+  <p class="ignorati" id="ignorati" hidden></p>
+
+  <div class="cards">
+    <div class="card">
+      <h3>Fatturato mese per mese</h3>
+      <p class="sub">Imponibile delle fatture emesse, note di credito sottratte. Autofatture e integrazioni (TD16–TD28) escluse.
+        <span id="corso-nota"></span></p>
+      <div id="mensile"></div>
+    </div>
+    <div class="due">
+      <div class="card">
+        <h3>Primi 10 clienti degli ultimi 12 mesi</h3>
+        <p class="sub" id="clienti-sub"></p>
+        <div id="clienti"></div>
+      </div>
+      <div class="card">
+        <h3>Scadenze dei prossimi 60 giorni</h3>
+        <p class="sub" id="scad-sub"></p>
+        <p class="attenzione"><b>Lo strumento non sa quali rate siano già state pagate.</b> Legge solo le fatture, non il conto in banca:
+          qui ci sono le scadenze scritte nelle fatture emesse, non gli incassi.</p>
+        <div id="scadenze"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="richiamo">
+    <p><b>Vuoi sapere chi non ti ha pagato?</b> Il cruscotto completo abbina gli incassi, ti dice chi sollecitare e lo leggiamo insieme in 30 minuti. 390 €.</p>
+    <a class="btn" href="index.html#contatti">Chiedi l'analisi</a>
+  </div>
+</div>
+</section>
+
+<section>
+<div class="wrap guida">
+  <div>
+    <h2>Come trasformare le fatture elettroniche XML e p7m in Excel</h2>
+    <p>Le fatture elettroniche sono file XML nel formato FatturaPA. Quelle firmate digitalmente hanno estensione .p7m:
+      dentro la busta di firma c'è lo stesso XML. Excel da solo non le apre in modo leggibile, quindi servono tre passaggi.</p>
+    <p class="small">Lo strumento non verifica la validità delle firme digitali e non sostituisce la contabilità:
+      serve ad avere i dati in un foglio di calcolo, in fretta.</p>
+  </div>
+  <ol>
+    <li><b>Scarica le fatture.</b> Nel portale Fatture e Corrispettivi dell'Agenzia delle Entrate entri con SPID, CIE o CNS,
+      vai in Consultazione, scegli fatture emesse o ricevute e il periodo, poi scarichi i file. Se non vedi le fatture,
+      controlla di aver aderito al servizio di consultazione. In alternativa va bene lo zip esportato dal gestionale
+      di fatturazione o quello che ti manda il commercialista.</li>
+    <li><b>Trascina i file in questa pagina.</b> .xml, .p7m e .zip insieme, senza decomprimere niente. Se la stessa fattura
+      c'è due volte, per esempio in .xml e in .p7m, viene contata una volta sola. La tua partita IVA viene riconosciuta da sola:
+      è quella che compare in più fatture.</li>
+    <li><b>Premi «Scarica Excel».</b> Trovi le fatture emesse, le ricevute, ogni riga di dettaglio con descrizione, quantità,
+      prezzo e aliquota, le scadenze e il fatturato mensile. Le note di credito sono in negativo.</li>
+  </ol>
+</div>
+</section>
+
+<div class="wrap"><footer><span>Cruscotto Fatture · P.IVA da inserire</span><span>Questa pagina non usa cookie e non invia i tuoi file a nessuno.</span></footer></div>
+<div id="tip" hidden></div>
+
+<script>
+'use strict';
+/* Lettura delle fatture elettroniche (FatturaPA) nel browser. Stessa logica di cruscotto.py:
+   namespace ignorati, più FatturaElettronicaBody per file, TD04 negativo, TD16–TD28 fuori dal fatturato,
+   split payment, ritenute, deduplica per (cedente, tipo, numero, data), azienda = id più frequente. */
+
+const TIPI_POSITIVI = new Set(['TD01', 'TD02', 'TD03', 'TD05', 'TD06', 'TD24', 'TD25', 'TD26']);
+const TIPI_NEGATIVI = new Set(['TD04']);
+const MESI = ['gen', 'feb', 'mar', 'apr', 'mag', 'giu', 'lug', 'ago', 'set', 'ott', 'nov', 'dic'];
+const MESI_LUNGHI = ['gennaio', 'febbraio', 'marzo', 'aprile', 'maggio', 'giugno', 'luglio', 'agosto',
+  'settembre', 'ottobre', 'novembre', 'dicembre'];
+const INIZIALI = ['G', 'F', 'M', 'A', 'M', 'G', 'L', 'A', 'S', 'O', 'N', 'D'];
+const MODALITA = {MP01: 'Contanti', MP02: 'Assegno', MP03: 'Assegno circolare', MP05: 'Bonifico', MP08: 'Carta di pagamento',
+  MP09: 'RID', MP12: 'RIBA', MP13: 'MAV', MP16: 'Domiciliazione bancaria', MP19: 'SEPA Direct Debit', MP23: 'PagoPA'};
+const DATA_DEMO = '2026-10-08';
+const GIORNI_SCADENZE = 60;
+
+// ------------------------------------------------------------------ date (stringhe AAAA-MM-GG, calcoli in UTC)
+
+const due = n => String(n).padStart(2, '0');
+function isoData(t) {
+  const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec((t || '').slice(0, 10));
+  if (!m) return null;
+  const d = new Date(Date.UTC(+m[1], +m[2] - 1, +m[3]));
+  return d.getUTCMonth() === +m[2] - 1 && d.getUTCDate() === +m[3] ? m[0] : null;
+}
+function piuGiorni(iso, n) {
+  const d = new Date(Date.UTC(+iso.slice(0, 4), +iso.slice(5, 7) - 1, +iso.slice(8, 10) + n));
+  return d.toISOString().slice(0, 10);
+}
+function menoMesi(iso, n) {               // primo giorno del mese, n mesi prima
+  let y = +iso.slice(0, 4), m = +iso.slice(5, 7) - n;
+  while (m <= 0) { y -= 1; m += 12; }
+  return `${y}-${due(m)}-01`;
+}
+function oggiLocale() { const d = new Date(); return `${d.getFullYear()}-${due(d.getMonth() + 1)}-${due(d.getDate())}`; }
+function gma(iso) { return `${+iso.slice(8, 10)} ${MESI[+iso.slice(5, 7) - 1]} ${iso.slice(0, 4)}`; }
+// «al 3 ottobre», ma «all'8 ottobre» e «dal 1° ottobre»
+const ELISO = {al: "all'", dal: "dall'", del: "dell'"};
+function conData(prep, iso, lungo = false) {
+  const g = +iso.slice(8, 10);
+  const d = `${g === 1 ? '1°' : g} ${(lungo ? MESI_LUNGHI : MESI)[+iso.slice(5, 7) - 1]} ${iso.slice(0, 4)}`;
+  return g === 8 || g === 11 ? ELISO[prep] + d : `${prep} ${d}`;
+}
+const maiuscola = s => s.charAt(0).toUpperCase() + s.slice(1);
+function seriale(iso) {                   // data Excel, senza fuso orario
+  if (!iso) return null;
+  return (Date.UTC(+iso.slice(0, 4), +iso.slice(5, 7) - 1, +iso.slice(8, 10)) - Date.UTC(1899, 11, 30)) / 86400000;
+}
+
+// ------------------------------------------------------------------ numeri e testo
+
+const r2 = x => Math.round(x * 100) / 100;
+const fmt0 = new Intl.NumberFormat('it-IT', {style: 'currency', currency: 'EUR', maximumFractionDigits: 0, minimumFractionDigits: 0, useGrouping: 'always'});
+const fmtN = new Intl.NumberFormat('it-IT', {useGrouping: 'always'});
+const eur = x => fmt0.format(Math.abs(x) < 0.5 ? 0 : x).replace('-', '−');
+const intero = x => fmtN.format(x);
+function eurK(x) {
+  if (Math.abs(x) >= 1e6) return (x / 1e6).toFixed(1).replace('.', ',') + ' mln';
+  if (Math.abs(x) >= 1e4) return Math.round(x / 1000) + ' mila';
+  return intero(Math.round(x));
+}
+const ESC = {'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'};
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ESC[c]);
+const plurale = (n, uno, molti) => `${intero(n)} ${n === 1 ? uno : molti}`;
+
+// ------------------------------------------------------------------ byte
+
+const latin1 = new TextDecoder('latin1');
+function cerca(b, testo, da = 0) {
+  const p = Array.from(testo, c => c.charCodeAt(0));
+  outer: for (let i = da; i <= b.length - p.length; i++) {
+    for (let j = 0; j < p.length; j++) if (b[i + j] !== p[j]) continue outer;
+    return i;
+  }
+  return -1;
+}
+function cercaUltimo(b, testo) {
+  const p = Array.from(testo, c => c.charCodeAt(0));
+  outer: for (let i = b.length - p.length; i >= 0; i--) {
+    for (let j = 0; j < p.length; j++) if (b[i + j] !== p[j]) continue outer;
+    return i;
+  }
+  return -1;
+}
+function unisci(pezzi) {
+  const out = new Uint8Array(pezzi.reduce((s, p) => s + p.length, 0));
+  let o = 0;
+  for (const p of pezzi) { out.set(p, o); o += p.length; }
+  return out;
+}
+function sembraXml(b) {
+  let i = 0;
+  if (b[0] === 0xef && b[1] === 0xbb && b[2] === 0xbf) i = 3;
+  if ((b[0] === 0xff && b[1] === 0xfe) || (b[0] === 0xfe && b[1] === 0xff)) return true;
+  while (i < b.length && (b[i] === 0x20 || b[i] === 0x0a || b[i] === 0x0d || b[i] === 0x09)) i++;
+  return b[i] === 0x3c;
+}
+
+// ------------------------------------------------------------------ busta .p7m (CAdES)
+
+// Se il file è testo base64 (o PEM) lo decodifica, altrimenti restituisce null.
+function daBase64(b) {
+  if (b[0] === 0x30) return null;
+  let t = latin1.decode(b).trim();
+  if (t.startsWith('-----BEGIN')) t = t.replace(/-----[^-]+-----/g, '');
+  t = t.replace(/\s+/g, '');
+  if (t.length < 16 || !/^[A-Za-z0-9+/_-]+=*$/.test(t)) return null;
+  try {
+    const s = atob(t.replace(/-/g, '+').replace(/_/g, '/'));
+    const out = new Uint8Array(s.length);
+    for (let i = 0; i < s.length; i++) out[i] = s.charCodeAt(i);
+    return out;
+  } catch (e) { return null; }
+}
+
+// Lettore ASN.1 BER/DER minimo: quanto basta per arrivare al contenuto firmato.
+function elemento(b, pos, fine) {
+  if (pos + 2 > fine) throw new Error('struttura troncata');
+  const tag = b[pos];
+  let p = pos + 1;
+  if ((tag & 0x1f) === 0x1f) { while (p < fine && (b[p] & 0x80)) p++; p++; }
+  const l0 = b[p++];
+  const costruito = (tag & 0x20) !== 0;
+  if (l0 !== 0x80) {
+    let len = l0;
+    if (l0 > 0x80) {
+      const n = l0 & 0x7f;
+      if (n > 4) throw new Error('lunghezza non valida');
+      len = 0;
+      for (let i = 0; i < n; i++) len = len * 256 + b[p++];
+    }
+    if (p + len > fine) throw new Error('struttura troncata');
+    return {tag, costruito, inizio: p, fineContenuto: p + len, dopo: p + len};
+  }
+  if (!costruito) throw new Error('lunghezza indefinita non valida');
+  let q = p;
+  for (;;) {                                // lunghezza indefinita: fino a 00 00
+    if (q + 2 > fine) throw new Error('struttura troncata');
+    if (b[q] === 0 && b[q + 1] === 0) return {tag, costruito, inizio: p, fineContenuto: q, dopo: q + 2};
+    q = elemento(b, q, fine).dopo;
+  }
+}
+function figliAsn(b, el) {
+  const out = [];
+  for (let p = el.inizio; p < el.fineContenuto;) { const f = elemento(b, p, el.fineContenuto); out.push(f); p = f.dopo; }
+  return out;
+}
+function ottetti(b, el) {                   // OCTET STRING semplice o spezzata in blocchi
+  if (!el.costruito) return [b.subarray(el.inizio, el.fineContenuto)];
+  return figliAsn(b, el).flatMap(f => ottetti(b, f));
+}
+function contenutoCms(b) {
+  const radice = elemento(b, 0, b.length);
+  if (radice.tag !== 0x30) throw new Error('non è una busta CMS');
+  const [, esplicito] = figliAsn(b, radice);
+  if (!esplicito || esplicito.tag !== 0xa0) throw new Error('non è una busta CMS');
+  const sd = figliAsn(b, esplicito)[0];
+  const eci = sd && sd.tag === 0x30 ? figliAsn(b, sd)[2] : null;
+  if (!eci || eci.tag !== 0x30) throw new Error('busta CMS inattesa');
+  const parti = figliAsn(b, eci);
+  if (parti.length < 2) throw new Error('la busta non contiene il documento');
+  return unisci(ottetti(b, figliAsn(b, parti[1])[0]));
+}
+// Ripiego di cruscotto.py: l'XML in chiaro dentro la busta, togliendo le intestazioni
+// dei blocchi OCTET STRING (04 82 hh ll, 04 81 hh, 04 ll) che spezzano il testo ogni ~1000 byte.
+function xmlDaBustaGrezza(b) {
+  let inizio = cerca(b, '<?xml');
+  if (inizio < 0) {
+    const tag = cerca(b, 'FatturaElettronica');
+    if (tag >= 0) for (let i = tag; i >= Math.max(0, tag - 40); i--) if (b[i] === 0x3c) { inizio = i; break; }
+  }
+  const fine = cercaUltimo(b, 'FatturaElettronica>');
+  if (inizio < 0 || fine < inizio) throw new Error('busta p7m non leggibile');
+  const pezzo = b.subarray(inizio, fine + 'FatturaElettronica>'.length);
+  const out = new Uint8Array(pezzo.length);
+  let n = 0;
+  for (let i = 0; i < pezzo.length; i++) {
+    if (pezzo[i] === 0x04) {
+      const l = pezzo[i + 1];
+      if (l === 0x82 && pezzo[i + 4] > 0x08) { i += 3; continue; }
+      if (l === 0x81 && pezzo[i + 3] > 0x08) { i += 2; continue; }
+      if (l < 0x80 && pezzo[i + 2] > 0x08) { i += 1; continue; }
+    }
+    out[n++] = pezzo[i];
+  }
+  return out.subarray(0, n);
+}
+function xmlDaP7m(dati) {
+  let b = daBase64(dati) || dati;
+  for (let giro = 0; giro < 3; giro++) {    // anche buste annidate (firme multiple)
+    let x;
+    try { x = contenutoCms(b); } catch (e) { break; }
+    if (cerca(x, 'FatturaElettronica') >= 0) return x;
+    const dentro = x[0] === 0x30 ? x : daBase64(x);
+    if (!dentro) break;
+    b = dentro;
+  }
+  return xmlDaBustaGrezza(b);
+}
+
+// ------------------------------------------------------------------ XML FatturaPA
+
+function testoXml(b) {
+  if (b[0] === 0xff && b[1] === 0xfe) return new TextDecoder('utf-16le').decode(b);
+  if (b[0] === 0xfe && b[1] === 0xff) return new TextDecoder('utf-16be').decode(b);
+  const m = /encoding\s*=\s*["']([A-Za-z0-9._-]+)["']/.exec(latin1.decode(b.subarray(0, 200)));
+  try { return new TextDecoder(m ? m[1] : 'utf-8').decode(b); } catch (e) { return new TextDecoder('utf-8').decode(b); }
+}
+function figlio(el, nome) {
+  if (!el) return null;
+  for (let c = el.firstElementChild; c; c = c.nextElementSibling) if (c.localName === nome) return c;
+  return null;
+}
+function figliTutti(el, nome) {
+  const out = [];
+  if (el) for (let c = el.firstElementChild; c; c = c.nextElementSibling) if (c.localName === nome) out.push(c);
+  return out;
+}
+function trova(el, percorso) {
+  for (const p of percorso.split('/')) { el = figlio(el, p); if (!el) return null; }
+  return el;
+}
+function trovaTutti(el, percorso) {
+  let livello = el ? [el] : [];
+  for (const p of percorso.split('/')) livello = livello.flatMap(x => figliTutti(x, p));
+  return livello;
+}
+function testo(el, percorso, def = '') { const x = trova(el, percorso); return (x && x.textContent.trim()) || def; }
+function numONull(el, percorso) {
+  const t = testo(el, percorso);
+  if (!t) return null;
+  const v = Number(t.replace(/,/g, '.'));
+  return Number.isFinite(v) ? v : null;
+}
+const num = (el, percorso) => numONull(el, percorso) ?? 0;
+
+function soggetto(el) {
+  if (!el) return ['', ''];
+  const da = figlio(el, 'DatiAnagrafici');
+  let id = testo(da, 'IdFiscaleIVA/IdCodice') || testo(da, 'CodiceFiscale');
+  const paese = testo(da, 'IdFiscaleIVA/IdPaese', 'IT');
+  if (id && paese !== 'IT') id = paese + id;
+  let nome = testo(da, 'Anagrafica/Denominazione');
+  if (!nome) nome = [testo(da, 'Anagrafica/Nome'), testo(da, 'Anagrafica/Cognome')].filter(Boolean).join(' ');
+  return [id, nome || id || '(senza nome)'];
+}
+
+// Restituisce i documenti del file (uno per FatturaElettronicaBody), oppure null se non è una fattura.
+function leggiDocumenti(testoFattura, nomeFile) {
+  const doc = new DOMParser().parseFromString(testoFattura, 'application/xml');
+  const errore = doc.getElementsByTagName('parsererror')[0];
+  if (errore) {
+    const det = errore.textContent.replace(/^[\s\S]*?errors?:/, '').replace(/Below is[\s\S]*$/, '').trim().split('\n')[0];
+    throw new Error('XML non valido' + (det ? ` (${det.slice(0, 140)})` : ''));
+  }
+  const root = doc.documentElement;
+  if (!root || root.localName !== 'FatturaElettronica') return null;
+  const head = figlio(root, 'FatturaElettronicaHeader');
+  const [cedenteId, cedente] = soggetto(figlio(head, 'CedentePrestatore'));
+  const [cessionarioId, cessionario] = soggetto(figlio(head, 'CessionarioCommittente'));
+  const out = [];
+  for (const body of figliTutti(root, 'FatturaElettronicaBody')) {
+    const dg = trova(body, 'DatiGenerali/DatiGeneraliDocumento');
+    const data = isoData(testo(dg, 'Data'));
+    if (!data) continue;
+    let imponibile = 0, imposta = 0, split = 0;
+    for (const r of trovaTutti(body, 'DatiBeniServizi/DatiRiepilogo')) {
+      const iva = num(r, 'Imposta');
+      imponibile += num(r, 'ImponibileImporto');
+      imposta += iva;
+      if (testo(r, 'EsigibilitaIVA') === 'S') split += iva;
+    }
+    const totale = testo(dg, 'ImportoTotaleDocumento') ? num(dg, 'ImportoTotaleDocumento') : imponibile + imposta;
+    const ritenuta = figliTutti(dg, 'DatiRitenuta').reduce((s, x) => s + num(x, 'ImportoRitenuta'), 0);
+    let scadenze = [];
+    for (const dp of trovaTutti(body, 'DatiPagamento/DettaglioPagamento')) {
+      let ds = isoData(testo(dp, 'DataScadenzaPagamento'));
+      const rif = isoData(testo(dp, 'DataRiferimentoTerminiPagamento'));
+      const gg = testo(dp, 'GiorniTerminiPagamento');
+      if (!ds && /^\d+$/.test(gg)) ds = piuGiorni(rif || data, +gg);
+      if (!ds) ds = rif;
+      const importo = num(dp, 'ImportoPagamento');
+      if (ds && importo) scadenze.push({data: ds, importo, modalita: testo(dp, 'ModalitaPagamento')});
+    }
+    const indicata = scadenze.length > 0;
+    if (!indicata) scadenze = [{data, importo: r2(totale - split - ritenuta), modalita: ''}];
+    const linee = trovaTutti(body, 'DatiBeniServizi/DettaglioLinee').map(l => ({
+      n: numONull(l, 'NumeroLinea'), codice: testo(l, 'CodiceArticolo/CodiceValore'), descrizione: testo(l, 'Descrizione'),
+      quantita: numONull(l, 'Quantita'), um: testo(l, 'UnitaMisura'), prezzo: numONull(l, 'PrezzoUnitario'),
+      totale: numONull(l, 'PrezzoTotale'), aliquota: numONull(l, 'AliquotaIVA'), natura: testo(l, 'Natura'),
+    }));
+    out.push({
+      file: nomeFile, tipo: testo(dg, 'TipoDocumento', 'TD01'), data, numero: testo(dg, 'Numero'),
+      cedenteId, cedente, cessionarioId, cessionario,
+      imponibile: r2(imponibile), imposta: r2(imposta), split: r2(split), ritenuta: r2(ritenuta), totale: r2(totale),
+      scadenze, scadenzaIndicata: indicata, linee, direzione: '',
+    });
+  }
+  return out;
+}
+const segno = d => TIPI_NEGATIVI.has(d.tipo) ? -1 : 1;
+const commerciale = d => TIPI_POSITIVI.has(d.tipo) || TIPI_NEGATIVI.has(d.tipo);
+
+// ------------------------------------------------------------------ raccolta dei file
+
+const S = {docs: [], visti: new Set(), letti: 0, duplicati: 0, errori: [], nonFatture: [], demo: false, piva: null};
+
+function azzera() {
+  Object.assign(S, {docs: [], visti: new Set(), letti: 0, duplicati: 0, errori: [], nonFatture: [], demo: false, piva: null});
+}
+
+async function apriZip(dati, nomeZip, sorgenti, profondita = 0) {
+  if (typeof JSZip === 'undefined') throw new Error('libreria per gli zip non caricata: ricarica la pagina con la connessione attiva');
+  let zip;
+  try { zip = await JSZip.loadAsync(dati); } catch (e) {
+    S.errori.push({nome: nomeZip, errore: /encrypt/i.test(e.message) ? 'zip protetto da password' : 'zip non leggibile'});
+    return;
+  }
+  for (const voce of Object.values(zip.files)) {
+    if (voce.dir) continue;
+    const low = voce.name.toLowerCase(), base = low.split('/').pop();
+    if (low.startsWith('__macosx') || base.startsWith('.')) continue;
+    const nome = `${nomeZip}:${voce.name}`;
+    if (low.endsWith('.zip') && profondita < 2) await apriZip(await voce.async('uint8array'), nome, sorgenti, profondita + 1);
+    else if (low.endsWith('.xml') || low.endsWith('.p7m')) sorgenti.push({nome, dati: await voce.async('uint8array')});
+  }
+}
+
+// voci: [{nome, file}] dove file è un File/Blob. Aggiunge alle fatture già lette.
+async function aggiungi(voci) {
+  const sorgenti = [];
+  for (const {nome, file} of voci) {
+    const low = nome.toLowerCase(), base = low.split('/').pop();
+    if (base.startsWith('.')) continue;
+    try {
+      if (low.endsWith('.zip')) { stato(`Apro ${nome}…`); await apriZip(new Uint8Array(await file.arrayBuffer()), nome, sorgenti); }
+      else if (low.endsWith('.xml') || low.endsWith('.p7m')) sorgenti.push({nome, dati: new Uint8Array(await file.arrayBuffer())});
+      else S.errori.push({nome, errore: 'non è un file .xml, .p7m o .zip'});
+    } catch (e) { S.errori.push({nome, errore: e.message}); }
+  }
+  await elabora(sorgenti);
+}
+
+async function elabora(sorgenti) {
+  const n = sorgenti.length;
+  for (let i = 0; i < n; i++) {
+    if (i % 50 === 0) { stato(`Lettura delle fatture: ${intero(i)} di ${intero(n)}`, i / n); await new Promise(r => setTimeout(r)); }
+    const {nome, dati} = sorgenti[i];
+    S.letti += 1;
+    let trovati;
+    try {
+      const low = nome.toLowerCase();
+      let xml = dati;
+      if (low.endsWith('.p7m')) xml = xmlDaP7m(dati);
+      else if (!sembraXml(dati)) {
+        try { xml = xmlDaP7m(dati); } catch (e) { throw new Error('il file non contiene XML leggibile'); }
+      }
+      trovati = leggiDocumenti(testoXml(xml), nome);
+    } catch (e) { S.errori.push({nome, errore: e.message}); continue; }
+    if (trovati === null) { S.nonFatture.push(nome); continue; }
+    for (const d of trovati) {
+      const chiave = [d.cedenteId, d.tipo, d.numero, d.data].join('\u0001');
+      if (S.visti.has(chiave)) { S.duplicati += 1; continue; }
+      S.visti.add(chiave);
+      S.docs.push(d);
+    }
+  }
+}
+
+// ------------------------------------------------------------------ analisi
+
+function candidati(docs) {
+  const conta = new Map(), nomi = new Map();
+  for (const d of docs) {
+    for (const [id, nome] of [[d.cedenteId, d.cedente], [d.cessionarioId, d.cessionario]]) {
+      conta.set(id, (conta.get(id) || 0) + 1);
+      if (!nomi.has(id)) nomi.set(id, nome);
+    }
+  }
+  conta.delete('');
+  return [...conta].sort((a, b) => b[1] - a[1]).map(([id, n]) => ({id, n, nome: nomi.get(id)}));
+}
+
+function analizza(oggi) {
+  const docs = S.docs;
+  const cand = candidati(docs);
+  if (!cand.length) return null;
+  const piva = S.piva && cand.some(c => c.id === S.piva) ? S.piva : cand[0].id;
+  let nome = '';
+  for (const d of docs) {
+    if (d.cedenteId === piva) { d.direzione = 'emessa'; nome = d.cedente; }
+    else if (d.cessionarioId === piva) { d.direzione = 'ricevuta'; nome = nome || d.cessionario; }
+    else d.direzione = 'estranea';
+  }
+  const perData = (a, b) => a.data < b.data ? -1 : a.data > b.data ? 1 : 0;
+  const emesse = docs.filter(d => d.direzione === 'emessa' && commerciale(d)).sort(perData);
+  const ricevute = docs.filter(d => d.direzione === 'ricevuta' && commerciale(d)).sort(perData);
+  const esclusi = docs.filter(d => d.direzione !== 'estranea' && !commerciale(d)).length;
+  const estranei = docs.filter(d => d.direzione === 'estranea').length;
+
+  // fatturato e acquisti per mese
+  const perMese = new Map();
+  const voceMese = k => perMese.get(k) || perMese.set(k, {chiave: k, imp: 0, n: 0, acq: 0, nAcq: 0}).get(k);
+  for (const d of emesse) { const v = voceMese(d.data.slice(0, 7)); v.imp += segno(d) * d.imponibile; v.n += 1; }
+  for (const d of ricevute) { const v = voceMese(d.data.slice(0, 7)); v.acq += segno(d) * d.imponibile; v.nAcq += 1; }
+  const serie = (da, a) => {
+    const out = [];
+    let y = +da.slice(0, 4), m = +da.slice(5, 7);
+    while (`${y}-${due(m)}` <= a) {
+      const k = `${y}-${due(m)}`;
+      const v = perMese.get(k) || {chiave: k, imp: 0, n: 0, acq: 0, nAcq: 0};
+      out.push({...v, y, m, imp: r2(v.imp), acq: r2(v.acq)});
+      if (++m > 12) { m = 1; y += 1; }
+    }
+    return out;
+  };
+  const mesi = emesse.length ? serie(emesse[0].data, emesse[emesse.length - 1].data.slice(0, 7)) : [];
+  const tutti = [...emesse, ...ricevute].map(d => d.data).sort();
+  const mesiExcel = tutti.length ? serie(tutti[0], tutti[tutti.length - 1].slice(0, 7)) : [];
+
+  // clienti degli ultimi 12 mesi (stessa finestra di cruscotto.py: dal 1° del mese, 12 mesi fa, a oggi)
+  const da12 = menoMesi(oggi, 12);
+  const clienti = new Map();
+  let fatt12 = 0;
+  for (const d of emesse) {
+    if (d.data < da12 || d.data > oggi) continue;
+    const c = clienti.get(d.cessionarioId) || clienti.set(d.cessionarioId, {id: d.cessionarioId, nome: d.cessionario, imp: 0, n: 0}).get(d.cessionarioId);
+    c.imp += segno(d) * d.imponibile;
+    c.n += 1;
+    fatt12 += segno(d) * d.imponibile;
+  }
+  const classifica = [...clienti.values()].sort((a, b) => b.imp - a.imp);
+
+  // scadenze scritte nelle fatture emesse
+  const limite = piuGiorni(oggi, GIORNI_SCADENZE);
+  const rate = [];
+  for (const d of emesse) {
+    if (segno(d) < 0 || !d.scadenzaIndicata) continue;
+    for (const s of d.scadenze) rate.push({...s, doc: d, entro: s.data >= oggi && s.data <= limite});
+  }
+  rate.sort((a, b) => a.data < b.data ? -1 : a.data > b.data ? 1 : a.doc.cessionario.localeCompare(b.doc.cessionario));
+  const prossime = rate.filter(r => r.entro);
+  const senzaScadenza = emesse.filter(d => segno(d) > 0 && !d.scadenzaIndicata).length;
+
+  return {
+    azienda: nome || piva, piva, oggi, da12, limite, candidati: cand, emesse, ricevute, esclusi, estranei,
+    mesi, mesiExcel, fatt12: r2(fatt12), classifica, rate, prossime, senzaScadenza,
+    noteCredito: emesse.filter(d => segno(d) < 0).length,
+    fornitori: new Set(ricevute.map(d => d.cedenteId)).size,
+  };
+}
+
+// ------------------------------------------------------------------ Excel
+
+function costruisciWorkbook(A) {
+  const X = XLSX.utils;
+  const wb = X.book_new();
+  wb.Props = {Title: 'Fatture elettroniche', Subject: `${A.azienda} (${A.piva})`};
+  const EUR = '#,##0.00 "€";[Red]-#,##0.00 "€"', DATA = 'dd/mm/yyyy', PREZZO = '#,##0.00######', QTA = '#,##0.########';
+
+  function foglio(nome, intest, righe, formati = {}) {
+    const ws = X.aoa_to_sheet([intest, ...righe]);
+    for (const [col, z] of Object.entries(formati)) {
+      for (let r = 1; r <= righe.length; r++) {
+        const c = ws[X.encode_cell({r, c: +col})];
+        if (c && c.t === 'n') c.z = z;
+      }
+    }
+    ws['!cols'] = intest.map((h, i) => {
+      let w = String(h).length;
+      for (const r of righe.slice(0, 300)) {
+        const v = r[i];
+        if (v == null) continue;
+        w = Math.max(w, formati[i] === DATA ? 10 : typeof v === 'number' ? 12 : String(v).length);
+      }
+      return {wch: Math.min(50, Math.max(9, w + 2))};
+    });
+    if (righe.length) ws['!autofilter'] = {ref: ws['!ref']};
+    X.book_append_sheet(wb, ws, nome);
+  }
+
+  const contro = (d, emessa) => emessa ? [d.cessionario, d.cessionarioId] : [d.cedente, d.cedenteId];
+  const righeDoc = (docs, emessa) => docs.map(d => {
+    const s = segno(d);
+    return [seriale(d.data), d.tipo, d.numero, ...contro(d, emessa), s * d.imponibile, s * d.imposta, s * d.split,
+      s * d.ritenuta, s * d.totale, d.scadenzaIndicata ? seriale(d.scadenze[d.scadenze.length - 1].data) : null,
+      d.linee.slice(0, 3).map(l => l.descrizione).filter(Boolean).join('; '), d.file];
+  });
+  const intestDoc = c => ['Data', 'Tipo', 'Numero', c, `P.IVA o CF ${c.toLowerCase()}`, 'Imponibile', 'IVA',
+    'di cui split payment', 'Ritenuta', 'Totale documento', 'Ultima scadenza', 'Descrizione (prime righe)', 'File'];
+  const fmtDoc = {0: DATA, 5: EUR, 6: EUR, 7: EUR, 8: EUR, 9: EUR, 10: DATA};
+  foglio('Fatture emesse', intestDoc('Cliente'), righeDoc(A.emesse, true), fmtDoc);
+  foglio('Fatture ricevute', intestDoc('Fornitore'), righeDoc(A.ricevute, false), fmtDoc);
+
+  const righe = [];
+  for (const [docs, dir, emessa] of [[A.emesse, 'Emessa', true], [A.ricevute, 'Ricevuta', false]]) {
+    for (const d of docs) {
+      const s = segno(d);
+      for (const l of d.linee) {
+        righe.push([dir, seriale(d.data), d.tipo, d.numero, ...contro(d, emessa), l.n, l.codice || null, l.descrizione,
+          l.quantita == null ? null : s * l.quantita, l.um || null, l.prezzo, l.totale == null ? null : s * l.totale,
+          l.aliquota, l.natura || null, d.file]);
+      }
+    }
+  }
+  foglio('Righe', ['Fattura', 'Data', 'Tipo', 'Numero', 'Controparte', 'P.IVA o CF controparte', 'Linea', 'Codice articolo',
+    'Descrizione', 'Quantità', 'Unità di misura', 'Prezzo unitario', 'Prezzo totale', 'Aliquota IVA %', 'Natura IVA', 'File'],
+  righe, {1: DATA, 9: QTA, 11: PREZZO, 12: EUR});
+
+  foglio('Scadenze', ['Scadenza', 'Cliente', 'P.IVA o CF cliente', 'Numero fattura', 'Data fattura', 'Importo rata',
+    'Modalità di pagamento', `Nei prossimi ${GIORNI_SCADENZE} giorni`],
+  A.rate.map(r => [seriale(r.data), r.doc.cessionario, r.doc.cessionarioId, r.doc.numero, seriale(r.doc.data), r.importo,
+    r.modalita ? (MODALITA[r.modalita] ? `${r.modalita} ${MODALITA[r.modalita]}` : r.modalita) : null, r.entro ? 'sì' : null]),
+  {0: DATA, 4: DATA, 5: EUR});
+
+  foglio('Fatturato mensile', ['Mese', 'Fatture emesse', 'Imponibile fatture emesse', 'Fatture ricevute', 'Imponibile fatture ricevute'],
+    A.mesiExcel.map(m => [seriale(`${m.chiave}-01`), m.n, m.imp, m.nAcq, m.acq]), {0: 'mmm yyyy', 2: EUR, 4: EUR});
+
+  if (S.errori.length) foglio('File non letti', ['File', 'Errore'], S.errori.map(e => [e.nome, e.errore]));
+  return wb;
+}
+
+function nomeExcel(A) { return S.demo ? 'fatture-esempio.xlsx' : `fatture-${A.piva}-${A.oggi}.xlsx`; }
+
+// ------------------------------------------------------------------ pagina
+
+const $ = id => document.getElementById(id);
+let ultima = null;   // ultima analisi mostrata
+
+function stato(msg, quota = null, errore = false) {
+  const el = $('stato');
+  el.classList.toggle('errore', errore);
+  el.replaceChildren();
+  if (!msg) return;
+  const p = document.createElement('span');
+  p.textContent = msg;
+  el.append(p);
+  if (quota !== null) { const pr = document.createElement('progress'); pr.max = 1; pr.value = quota; el.append(pr); }
+}
+
+function scala(max) {
+  if (max <= 0) return [1, 0.25];
+  const grezzo = max / 4;
+  const pot = 10 ** (String(Math.floor(grezzo)).length - 1);
+  let passo = pot * 10;
+  for (const k of [1, 2, 2.5, 5, 10]) if (k * pot >= grezzo) { passo = k * pot; break; }
+  return [passo * 4 >= max ? passo * 4 : passo * 5, passo];
+}
+
+function graficoMensile(mesi, meseOggi) {
+  if (!mesi.length) return '<p class="vuoto">Nessuna fattura emessa da questa azienda nei file letti.</p>';
+  const [cima, passo] = scala(Math.max(...mesi.map(m => m.imp)));
+  let griglia = '', yax = '';
+  for (let t = 0; t <= cima + 1e-6; t += passo) {
+    const p = (t / cima * 100).toFixed(2);
+    griglia += `<i style="bottom:${p}%"${t === 0 ? ' class="zero"' : ''}></i>`;
+    yax += `<span style="bottom:${p}%">${esc(eurK(t))}</span>`;
+  }
+  const radi = mesi.length > 30;
+  let cols = '', lab = '', anni = '';
+  mesi.forEach((m, i) => {
+    const corso = m.chiave === meseOggi;
+    const nome = `${MESI_LUNGHI[m.m - 1]} ${m.y}${corso ? ' (in corso)' : ''}`;
+    const h = (Math.max(0, m.imp) / cima * 100).toFixed(2);
+    cols += `<div class="col${corso ? ' corso' : ''}" tabindex="0" data-v="${esc(eur(m.imp))}" data-l="${esc(`${nome} · ${plurale(m.n, 'fattura', 'fatture')}`)}" aria-label="${esc(`${nome}: ${eur(m.imp)}`)}"><i style="height:${h}%"></i></div>`;
+    const mostra = !radi || [1, 4, 7, 10].includes(m.m);
+    lab += `<span>${mostra ? `<span class="lungo">${MESI[m.m - 1]}</span><span class="corto">${INIZIALI[m.m - 1]}</span>` : ''}</span>`;
+    anni += `<span>${m.m === 1 || i === 0 ? m.y : ''}</span>`;
+  });
+  const righe = mesi.map(m => `<tr><td>${MESI_LUNGHI[m.m - 1]} ${m.y}</td><td class="r">${intero(m.n)}</td><td class="r">${esc(eur(m.imp))}</td></tr>`).join('');
+  return `<div class="grafico" style="--minw:${mesi.length * 7}px">
+    <div class="plot" role="img" aria-label="Grafico del fatturato mensile: i valori sono nella tabella sotto">
+      <div class="yax" aria-hidden="true">${yax}</div>
+      <div class="area"><div class="griglia" aria-hidden="true">${griglia}</div><div class="cols">${cols}</div></div>
+    </div>
+    <div class="xlab" aria-hidden="true"><span></span><div><div class="r">${lab}</div><div class="r anni">${anni}</div></div></div>
+  </div>
+  <details class="valori"><summary>Vedi i valori mese per mese</summary>
+    <div class="scroll"><table><thead><tr><th>Mese</th><th class="r">Fatture</th><th class="r">Imponibile</th></tr></thead><tbody>${righe}</tbody></table></div>
+  </details>`;
+}
+
+// etichette dei mesi: «set» se c'è posto, altrimenti l'iniziale
+function adattaEtichette() {
+  const g = document.querySelector('.grafico');
+  if (!g || !ultima) return;
+  const n = Math.max(1, ultima.mesi.length);
+  g.classList.toggle('stretto', (g.clientWidth - 64) / n < 26);
+}
+if ('ResizeObserver' in window) new ResizeObserver(adattaEtichette).observe(document.getElementById('mensile'));
+
+function tabellaClienti(A) {
+  const top = A.classifica.filter(c => c.n > 0).slice(0, 10);
+  if (!top.length) return '<p class="vuoto">Nessuna fattura emessa negli ultimi 12 mesi.</p>';
+  const maxQ = Math.max(...top.map(c => c.imp));
+  const righe = top.map(c => {
+    const q = A.fatt12 > 0 ? c.imp / A.fatt12 : 0;
+    const w = maxQ > 0 ? Math.max(0, c.imp / maxQ * 100) : 0;
+    return `<tr><td>${esc(c.nome)}<span class="id">${esc(c.id)}</span></td><td class="r nasc-m">${intero(c.n)}</td>
+      <td class="r">${esc(eur(c.imp))}</td><td class="r"><span class="quota"><span class="barra"><i style="width:${w.toFixed(1)}%"></i></span>${(q * 100).toFixed(0)}%</span></td></tr>`;
+  }).join('');
+  return `<div class="scroll"><table><thead><tr><th>Cliente</th><th class="r nasc-m">Fatture</th><th class="r">Imponibile</th><th class="r">Quota</th></tr></thead><tbody>${righe}</tbody></table></div>`;
+}
+
+function tabellaScadenze(A) {
+  if (!A.prossime.length) return '<p class="vuoto">Nessuna scadenza indicata nelle fatture emesse per i prossimi 60 giorni.</p>';
+  const riga = r => `<tr><td class="mono data">${esc(gma(r.data))}</td><td>${esc(r.doc.cessionario)}<span class="id">fattura ${esc(r.doc.numero)} ${esc(conData('del', r.doc.data))}</span></td><td class="r">${esc(eur(r.importo))}</td></tr>`;
+  const prime = A.prossime.slice(0, 12).map(riga).join('');
+  const altre = A.prossime.slice(12).map(riga).join('');
+  return `<div class="scroll"><table><thead><tr><th>Scadenza</th><th>Cliente e fattura</th><th class="r">Importo</th></tr></thead>
+    <tbody>${prime}</tbody>${altre ? `<tbody id="altre-rate" hidden>${altre}</tbody>` : ''}</table></div>
+    ${altre ? `<p class="nota"><button class="linkbtn" type="button" id="mostra-rate">Mostra tutte le ${intero(A.prossime.length)} rate</button></p>` : ''}`;
+}
+
+function mostra(A) {
+  ultima = A;
+  $('risultati').hidden = false;
+  $('az-nome').textContent = A.azienda;
+  $('az-piva').textContent = A.piva;
+  $('az-rif').textContent = `situazione ${conData('al', A.oggi, true)}`;
+  $('demo-banner').hidden = !S.demo;
+
+  const sel = $('sel-piva'), alt = A.candidati.slice(0, 6);
+  $('scelta').hidden = alt.length < 2;
+  sel.replaceChildren(...alt.map(c => {
+    const o = document.createElement('option');
+    o.value = c.id;
+    o.textContent = `${c.nome} (${c.id}) · ${plurale(c.n, 'fattura', 'fatture')}`;
+    o.selected = c.id === A.piva;
+    return o;
+  }));
+
+  const totProssime = A.prossime.reduce((s, r) => s + r.importo, 0);
+  const tile = (k, v, n) => `<div class="tile"><span class="k">${k}</span><span class="v">${esc(v)}</span><span class="n">${esc(n)}</span></div>`;
+  $('tiles').innerHTML =
+    tile('Fatture emesse', intero(A.emesse.length), A.noteCredito ? `di cui ${plurale(A.noteCredito, 'nota', 'note')} di credito` : 'nessuna nota di credito') +
+    tile('Fatture ricevute', intero(A.ricevute.length), A.fornitori ? `da ${plurale(A.fornitori, 'fornitore', 'fornitori')}` : 'nessun fornitore') +
+    tile('Fatturato ultimi 12 mesi', eur(A.fatt12), `imponibile ${conData('dal', A.da12)}`) +
+    tile(`Scadenze nei prossimi ${GIORNI_SCADENZE} giorni`, eur(totProssime), `${plurale(A.prossime.length, 'rata', 'rate')} indicate nelle fatture`);
+
+  const parti = [`Letti ${plurale(S.letti, 'file', 'file')}`, `${plurale(S.duplicati, 'duplicato scartato', 'duplicati scartati')}`,
+    `${plurale(S.errori.length, 'file non letto', 'file non letti')}`];
+  if (A.esclusi) parti.push(`${plurale(A.esclusi, 'autofattura o integrazione esclusa', 'autofatture e integrazioni escluse')}`);
+  if (A.estranei) parti.push(`${plurale(A.estranei, 'fattura', 'fatture')} di altre aziende ${A.estranei === 1 ? 'esclusa' : 'escluse'}`);
+  $('lettura').innerHTML = parti.map(esc).join('<span class="sep">|</span>');
+
+  const err = $('errori');
+  err.hidden = !S.errori.length;
+  err.innerHTML = S.errori.length ? `<p>${plurale(S.errori.length, 'file non letto', 'file non letti')}</p><ul>${
+    S.errori.map(e => `<li><span class="mono">${esc(e.nome)}</span>: ${esc(e.errore)}</li>`).join('')}</ul>` : '';
+  const ign = $('ignorati');
+  ign.hidden = !S.nonFatture.length;
+  ign.textContent = S.nonFatture.length ? `${plurale(S.nonFatture.length, 'file ignorato', 'file ignorati')} perché non ${S.nonFatture.length === 1 ? 'è una fattura' : 'sono fatture'} (per esempio metadati o ricevute del Sistema di Interscambio).` : '';
+
+  const meseOggi = A.oggi.slice(0, 7);
+  $('corso-nota').textContent = A.mesi.some(m => m.chiave === meseOggi) ? 'Il mese in corso è più chiaro perché non è finito.' : '';
+  $('mensile').innerHTML = graficoMensile(A.mesi, meseOggi);
+  adattaEtichette();
+
+  const top = A.classifica.filter(c => c.n > 0).slice(0, 10);
+  const quotaTop = A.fatt12 > 0 ? top.reduce((s, c) => s + c.imp, 0) / A.fatt12 : 0;
+  $('clienti-sub').textContent = `Imponibile ${conData('dal', A.da12)} ${conData('al', A.oggi)}, note di credito sottratte.` +
+    (top.length && A.classifica.length > top.length ? ` Questi ${top.length} valgono il ${(quotaTop * 100).toFixed(0)}% del fatturato.` : '');
+  $('clienti').innerHTML = tabellaClienti(A);
+
+  $('scad-sub').textContent = `${maiuscola(conData('dal', A.oggi))} ${conData('al', A.limite)}: ${plurale(A.prossime.length, 'rata', 'rate')} per ${eur(totProssime)}.` +
+    (A.senzaScadenza ? ` ${plurale(A.senzaScadenza, 'fattura emessa non indica', 'fatture emesse non indicano')} una scadenza e qui non ${A.senzaScadenza === 1 ? 'compare' : 'compaiono'}.` : '');
+  $('scadenze').innerHTML = tabellaScadenze(A);
+  const btn = $('mostra-rate');
+  if (btn) btn.addEventListener('click', () => { $('altre-rate').hidden = false; btn.parentElement.remove(); });
+}
+
+function aggiorna() {
+  const A = analizza(S.demo ? DATA_DEMO : oggiLocale());
+  if (!A) {
+    $('risultati').hidden = true;
+    const motivo = S.errori.length ? ` ${plurale(S.errori.length, 'file non letto', 'file non letti')}: ${S.errori.slice(0, 3).map(e => `${e.nome} (${e.errore})`).join('; ')}${S.errori.length > 3 ? '…' : ''}`
+      : S.nonFatture.length ? ' I file letti non sono fatture elettroniche.' : '';
+    stato(`Nessuna fattura trovata.${motivo}`, null, true);
+    return;
+  }
+  stato(`Fatto: ${plurale(A.emesse.length, 'fattura emessa', 'fatture emesse')} e ${plurale(A.ricevute.length, 'ricevuta', 'ricevute')}. I risultati sono qui sotto.`);
+  mostra(A);
+}
+
+let occupato = false;
+async function esegui(lavoro) {
+  if (occupato) return;
+  occupato = true;
+  for (const id of ['scegli', 'demo', 'excel']) $(id).disabled = true;
+  const primaVolta = $('risultati').hidden;
+  try {
+    await lavoro();
+    aggiorna();
+    if (primaVolta && !$('risultati').hidden) $('risultati').scrollIntoView({behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth'});
+  } catch (e) {
+    stato(e.message, null, true);
+  } finally {
+    occupato = false;
+    for (const id of ['scegli', 'demo', 'excel']) $(id).disabled = false;
+  }
+}
+
+async function caricaVoci(voci) {
+  if (S.demo) azzera();          // i file veri non si mescolano con l'esempio
+  await aggiungi(voci);
+}
+
+// file trascinati, anche cartelle intere
+function vociDaTrascinamento(dt) {
+  const entrate = [...(dt.items || [])].filter(i => i.kind === 'file').map(i => i.webkitGetAsEntry && i.webkitGetAsEntry());
+  if (!entrate.length || entrate.some(e => !e)) return Promise.resolve([...dt.files].map(f => ({nome: f.name, file: f})));
+  const out = [];
+  const visita = async (entry, cartella) => {
+    if (entry.isFile) {
+      const f = await new Promise((ok, ko) => entry.file(ok, ko));
+      out.push({nome: cartella + f.name, file: f});
+    } else if (entry.isDirectory) {
+      const lettore = entry.createReader();
+      for (;;) {
+        const lotto = await new Promise((ok, ko) => lettore.readEntries(ok, ko));
+        if (!lotto.length) break;
+        for (const e of lotto) await visita(e, `${cartella}${entry.name}/`);
+      }
+    }
+  };
+  return (async () => { for (const e of entrate) await visita(e, ''); return out; })();
+}
+
+const drop = $('drop');
+['dragenter', 'dragover'].forEach(t => document.addEventListener(t, ev => {
+  if (![...(ev.dataTransfer?.types || [])].includes('Files')) return;
+  ev.preventDefault();
+  ev.dataTransfer.dropEffect = 'copy';
+  drop.classList.add('sopra');
+}));
+document.addEventListener('dragleave', ev => { if (!ev.relatedTarget) drop.classList.remove('sopra'); });
+document.addEventListener('drop', ev => {
+  if (![...(ev.dataTransfer?.types || [])].includes('Files')) return;
+  ev.preventDefault();
+  drop.classList.remove('sopra');
+  const promessa = vociDaTrascinamento(ev.dataTransfer);   // va chiamata subito, durante l'evento
+  esegui(async () => caricaVoci(await promessa));
+});
+$('scegli').addEventListener('click', () => $('file').click());
+$('file').addEventListener('change', ev => {
+  const voci = [...ev.target.files].map(f => ({nome: f.name, file: f}));
+  ev.target.value = '';
+  if (voci.length) esegui(() => caricaVoci(voci));
+});
+$('demo').addEventListener('click', () => esegui(async () => {
+  stato('Scarico le fatture di esempio…', 0);
+  let risposta;
+  try { risposta = await fetch('demo.zip'); } catch (e) {
+    throw new Error('Non riesco a scaricare le fatture di esempio. Se hai aperto la pagina dal disco, aprila dal sito.');
+  }
+  if (!risposta.ok) throw new Error(`Non riesco a scaricare le fatture di esempio (errore ${risposta.status}).`);
+  const dati = new Uint8Array(await risposta.arrayBuffer());
+  azzera();
+  S.demo = true;
+  const sorgenti = [];
+  await apriZip(dati, 'demo.zip', sorgenti);
+  await elabora(sorgenti);
+}));
+$('excel').addEventListener('click', () => {
+  if (!ultima) return;
+  if (typeof XLSX === 'undefined') { stato('La libreria per l\'Excel non è stata caricata: ricarica la pagina con la connessione attiva.', null, true); return; }
+  XLSX.writeFile(costruisciWorkbook(ultima), nomeExcel(ultima), {bookType: 'xlsx', compression: true});
+});
+$('ricomincia').addEventListener('click', () => {
+  azzera();
+  ultima = null;
+  $('risultati').hidden = true;
+  stato('');
+  $('drop').scrollIntoView({block: 'center'});
+});
+$('sel-piva').addEventListener('change', ev => { S.piva = ev.target.value; aggiorna(); });
+
+// suggerimento sulle barre del grafico (mouse, tocco e tastiera)
+const tip = $('tip');
+function mostraTip(el, x, y) {
+  const v = document.createElement('b');
+  v.textContent = el.dataset.v;
+  tip.replaceChildren(v, document.createElement('br'), el.dataset.l);
+  tip.hidden = false;
+  posiziona(x, y);
+}
+function posiziona(x, y) {
+  const r = tip.getBoundingClientRect();
+  let l = x + 14, t = y + 14;
+  if (l + r.width > innerWidth - 8) l = x - r.width - 14;
+  if (t + r.height > innerHeight - 8) t = y - r.height - 14;
+  tip.style.left = Math.max(8, l) + 'px';
+  tip.style.top = Math.max(8, t) + 'px';
+}
+document.addEventListener('pointerover', ev => { const c = ev.target.closest('.col'); if (c) mostraTip(c, ev.clientX, ev.clientY); else tip.hidden = true; });
+document.addEventListener('pointermove', ev => { if (!tip.hidden) posiziona(ev.clientX, ev.clientY); });
+document.addEventListener('focusin', ev => { const c = ev.target.closest('.col'); if (!c) { tip.hidden = true; return; } const b = c.getBoundingClientRect(); mostraTip(c, b.left + b.width / 2, b.top); });
+document.addEventListener('focusout', () => { tip.hidden = true; });
+addEventListener('scroll', () => { tip.hidden = true; }, {passive: true});
+</script>
+</body>
+</html>
